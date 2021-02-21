@@ -189,7 +189,7 @@ class ChartHolder(ChartParams):
         offst = offset/2
         pos = np.arange(len(labels))
 
-        cmap_linspace = np.linspace(0, 1, len(vals)*2)[(len(vals)//2):len(vals)+(len(vals)//2)]
+        cmap_linspace = self.norm(np.linspace(0, 1, len(vals)*2)[(len(vals)//2):len(vals)+(len(vals)//2)])
         
         try:
             xs = np.arange(len(vals[0]))
