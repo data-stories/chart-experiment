@@ -100,7 +100,7 @@ class ChartHolder(ChartParams):
             )
             for i in autotext:
                 i.set_fontsize(self.variations_pie['fontsize'][item[8]]-2)
-                plt.setp(autotext)
+                #plt.setp(autotext)
         else:
             wedges, text = self.ax.pie(
                 vals,
@@ -110,7 +110,7 @@ class ChartHolder(ChartParams):
                 labeldistance=labeldistance,
                 startangle=startangle
             )
-            plt.setp(text)
+            #plt.setp(text)
 
         if self.variations_pie['sample_annot'][item[10]]:
             self.add_sample_annot()
@@ -149,8 +149,8 @@ class ChartHolder(ChartParams):
                 if self.variations_pie['fontsize'][item[9]] >= 14:
                     j = 4
                 i.set_fontsize(self.variations_pie['fontsize'][item[9]]-j)
-            plt.setp(autotext)
-            plt.setp(autotext)
+            #plt.setp(autotext)
+            #plt.setp(autotext)
         else:
             wedges, text = self.ax.pie(
                 vals, colors = cmap(cmap_linspace),
@@ -159,7 +159,7 @@ class ChartHolder(ChartParams):
                 labeldistance=labeldistance,
                 wedgeprops=dict(width=size),
                 startangle=startangle)
-            plt.setp(text)
+            #plt.setp(text)
 
         self.ax.legend(wedges, labels, bbox_to_anchor=bbox)
         self.plot_source_annotation(item[4],item[9])
@@ -341,7 +341,6 @@ class ChartHolder(ChartParams):
         """Attach a text label above each bar in *rects*, displaying its height."""
         
         if s == "h":
-            xytext=(5, 0)
             for rect in rects:
                 height = rect.get_width()
                 h = height
@@ -349,12 +348,11 @@ class ChartHolder(ChartParams):
                     h = height/3
                 self.ax.annotate('{:.1f}'.format(height),
                             xy=(h, rect.get_y() + rect.get_height() / 2),
-                            xytext=xytext,
+                            xytext=(5, 0),
                             textcoords="offset points",
                             ha='left', va='center',
                             fontsize = 10)
         elif s == "v":
-            xytext=(0, 5)
             for rect in rects:
                 height = rect.get_height()
                 h = height
@@ -362,7 +360,7 @@ class ChartHolder(ChartParams):
                     h = height/3
                 self.ax.annotate('{:.1f}'.format(height),
                             xy=(rect.get_x() + rect.get_width() / 2, h),
-                            xytext=xytext,
+                            xytext=(0, 5),
                             textcoords="offset points",
                             ha='center', va='bottom',
                             fontsize = 10)
