@@ -45,12 +45,12 @@ class PlottedData:
                 len(data_2018[data_2018["temp"] > 30])
         ]
         PP_PD_6_labels = [
-                        r'Very Cold\n below 0$^{\circ}$C',
-                        r'Cold\n0$^{\circ}$C - 7.5$^{\circ}$C',
-                        r'Cool\n7.5$^{\circ}$C - 17.5$^{\circ}$C',
-                        r'Warm\n17.5$^{\circ}$C - 25$^{\circ}$C',
-                        r'Hot\n25$^{\circ}$C - 30$^{\circ}$C',
-                        r'Very Hot\n30$^{\circ}$C + '           
+                        'Very Cold\n below 0$^{\circ}$C',
+                        'Cold\n0$^{\circ}$C - 7.5$^{\circ}$C',
+                        'Cool\n7.5$^{\circ}$C - 17.5$^{\circ}$C',
+                        'Warm\n17.5$^{\circ}$C - 25$^{\circ}$C',
+                        'Hot\n25$^{\circ}$C - 30$^{\circ}$C',
+                        'Very Hot\n30$^{\circ}$C + '           
         ]
         PP_PD_6_title = "Number of Days by Temperature"
 
