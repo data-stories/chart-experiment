@@ -18,7 +18,7 @@ class ChartHolder(ChartParams):
     def graph(self, chart_type, item, show=True, save=False):
 
         self.file_name = self._get_file_name(chart_type,item)
-        self.fig, self.ax = plt.subplots(figsize=(12,10))
+        self.fig, self.ax = plt.subplots(figsize=(13,13))
         self.norm = Normalize()
 
         if chart_type.lower() not in self.CHART_TYPES.keys():
@@ -30,7 +30,7 @@ class ChartHolder(ChartParams):
             self._show()
 
         if save:
-            self.save_chart(dpi=300, bbox_inches='tight', facecolor='w')
+            self.save_chart(dpi=200, bbox_inches='tight', facecolor='w')
 
     def save_chart(self, path=None, **kwargs):
         
@@ -49,8 +49,8 @@ class ChartHolder(ChartParams):
 
     def plot_source_annotation(self, location, font):
         coord_dict = {
-            (0,0): (-0.5,-0.5),
-            (1,0): (1, -0.5),
+            (0,0): (-0.2,-0.2),
+            (1,0): (1, -0.2),
             (0,1): (-0.5,1), # upper left
             (1,1): (1,1)
         }
@@ -99,8 +99,8 @@ class ChartHolder(ChartParams):
                 startangle=startangle
             )
             for i in autotext:
-                i.set_fontsize(self.variations_pie['fontsize'][item[8]]-2)
-                #plt.setp(autotext)
+                i.set_fontsize(self.variations_pie['fontsize'][item[8]]-4)
+                plt.setp(autotext)
         else:
             wedges, text = self.ax.pie(
                 vals,
@@ -110,16 +110,16 @@ class ChartHolder(ChartParams):
                 labeldistance=labeldistance,
                 startangle=startangle
             )
-            #plt.setp(text)
+            plt.setp(text)
 
         if self.variations_pie['sample_annot'][item[10]]:
             self.add_sample_annot()
 
         self.ax.legend(wedges, labels, bbox_to_anchor=bbox)
         self.plot_source_annotation(item[3], item[8])
-
-        self.ax.set(aspect="equal", title=self.variations_pie['displayed_data'][item[1]]["title"])
-        plt.tight_layout()
+        self.ax.set(
+            aspect="equal",
+            title=self.variations_pie['displayed_data'][item[1]]["title"])
 
     def _plot_donut(self, item):
         plt.rcParams['font.family'] = self.variations_donut['font'][item[8]]
@@ -145,12 +145,9 @@ class ChartHolder(ChartParams):
                                             wedgeprops=dict(width=size),
                                             startangle=startangle)
             for i in autotext:
-                j = 2
-                if self.variations_pie['fontsize'][item[9]] >= 14:
-                    j = 4
-                i.set_fontsize(self.variations_pie['fontsize'][item[9]]-j)
-            #plt.setp(autotext)
-            #plt.setp(autotext)
+                i.set_fontsize(self.variations_pie['fontsize'][item[9]]-4)
+            plt.setp(autotext)
+            plt.setp(autotext)
         else:
             wedges, text = self.ax.pie(
                 vals, colors = cmap(cmap_linspace),
@@ -159,7 +156,7 @@ class ChartHolder(ChartParams):
                 labeldistance=labeldistance,
                 wedgeprops=dict(width=size),
                 startangle=startangle)
-            #plt.setp(text)
+            plt.setp(text)
 
         self.ax.legend(wedges, labels, bbox_to_anchor=bbox)
         self.plot_source_annotation(item[4],item[9])
