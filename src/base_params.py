@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 class BaseParams:
 
     fonts = {
-    "ftse": "serif",
-    "ftns": "sans-serif",
-    "ftfa": "fantasy"}
+        "ftse": "serif",
+        "ftns": "sans-serif",
+        "ftfa": "fantasy"
+        }
 
     fontsizes = {
         'fs10': 10,
@@ -23,11 +24,12 @@ class BaseParams:
         }
 
     source_anns = {
-            "sa10": "ul",
-            "sa11": "ur",
-            "sa00": "ll",
-            "sa01": "lr",
-            "sano": False}
+        "sa10": "ul",
+        "sa11": "ur",
+        "sa00": "ll",
+        "sa01": "lr",
+        "sano": False
+        }
 
     percent_anns = {
         "pano": False,
