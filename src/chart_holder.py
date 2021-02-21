@@ -217,9 +217,8 @@ class ChartHolder(ChartParams):
             except: # for dd06 (it has two subgroups)
                 cmaps_list = cmap(self.norm(np.linspace(0.35, 0.5, 2)))
                 w = w/2
-                pos = np.arange(len(xticks))
-
                 xticks = self.variations_bar['displayed_data'][item[1]]['xticks']
+                pos = np.arange(len(xticks))
                 if self.variations_bar['orientation'][item[6]] == 'h':
                     b1 = self.ax.barh(xs, vals[0], label=labels[0], align = 'edge', color=cmaps_list[0], height = w, edgecolor="black")
                     b2 = self.ax.barh(xs+w+offset, vals[1], label=labels[1], align = 'edge', color=cmaps_list[1], height = w, edgecolor="black")
@@ -234,8 +233,8 @@ class ChartHolder(ChartParams):
                     self.ax.set_xticks(pos+w+offst)
                     self.ax.set_xticklabels(xticks, fontsize=12)
                     if err_val[2]:
-                        autolabel(b1,"v", "top")
-                        autolabel(b2,"v", "top")
+                        self.autolabel(b1,"v", "top")
+                        self.autolabel(b2,"v", "top")
         else:
             if err_val[1] == False:
                 error_kw={
@@ -252,7 +251,7 @@ class ChartHolder(ChartParams):
                         self.ax.xaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
                     b = self.ax.barh(xs, vals, xerr=errors, error_kw=error_kw, align = 'edge', color=cmap(cmap_linspace), height = w, edgecolor="black")
                     self.ax.set_yticks(pos+w/2)
-                    ax.set_yticklabels(labels)
+                    self.ax.set_yticklabels(labels)
                     if err_val[2]:
                         self.autolabel(b, "h", 'mid')
                 else:
@@ -367,4 +366,3 @@ class ChartHolder(ChartParams):
                             textcoords="offset points",
                             ha='center', va='bottom',
                             fontsize = 10)
-      
