@@ -18,7 +18,7 @@ class ChartParams(BaseParams):
         self.variations_bar = self._get_bar_dict()
 
         self.pie_variations, self.donut_variations, self.bar_variations = self.get_all_variations()
-    
+
     def get_all_records(self):
         list_of_cols = [
                 'Type', 'Hue', 'Displayed_data', 'Wedge_explode', 'Source_annotation_location', 'Rotation_Orientation',
@@ -96,6 +96,16 @@ class ChartParams(BaseParams):
 
         return complete_df
     
+    def get_random_sample(self,n):
+        samples = {}
+
+        for i in ['pie_variations', 'donut_variations', 'bar_variations']:
+            x = [np.random.randint(0, len(eval("self."+i))+1) for j in range(n)]
+            y = [eval("self."+i+str([j])) for j in x]
+            samples[i] = y
+        
+        return samples
+    
     def get_all_variations(self):
         pie_variations = self._get_variations(self.variations_pie)
         donut_variations = self._get_variations(self.variations_donut)
@@ -128,7 +138,10 @@ class ChartParams(BaseParams):
             "annotation_distance": BaseParams.get_annotation_dist(),
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
-            "legend_location": {"llcl": 'center left', "llcr": 'center right'},
+            "legend_location": {
+                #"llcl": 'center left',
+                "llcr": 'center right'
+                },
             "sample_annot": BaseParams.get_sample_annot()
         }
         return variations_pie
@@ -137,7 +150,7 @@ class ChartParams(BaseParams):
         variations_donut = {
             "hue": BaseParams.get_hues(),
             "displayed_data": self.DATA_DICT["data_donut_pie"],
-            "donuthole_size": {"dh2": 0.2, "dh4": 0.4, "dh6": 0.6, "dh8": 0.8},
+            "donuthole_size": {"dh2": 0.2, "dh5": 0.5, "dh8": 0.8},
             "wedge_explode": BaseParams.get_wedge_explodes(),
             "source_annotation": BaseParams.get_source_anns(),
             "orientation": BaseParams.get_orientations(),
@@ -145,7 +158,10 @@ class ChartParams(BaseParams):
             "annotation_distance": BaseParams.get_annotation_dist(),
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
-            "legend_location": {"llcl": 'center left', "llcr": 'center right'},
+            "legend_location": {
+                #"llcl": 'center left',
+                "llcr": 'center right'
+                },
             "sample_annot": BaseParams.get_sample_annot()
         }
         return variations_donut
@@ -158,10 +174,10 @@ class ChartParams(BaseParams):
             "percent_annotation": BaseParams.get_percent_anns(),
             "source_annotation": BaseParams.get_source_anns(),
             "bars_width": {
-                "bw30": 0.3, 
-                "bw45": 0.45, 
-                "bw60": 0.6, 
-                "bw75": 0.75
+                #"bw3": 0.3, 
+                "bw4": 0.4, 
+                "bw6": 0.6, 
+                "bw8": 0.8
                 },
             "orientation": {"boh": "h", "bov": "v"},
             "bar_spacing": {"bs000": 0, "bs025": 0.025, "bs050": 0.05},
@@ -174,7 +190,10 @@ class ChartParams(BaseParams):
                 },
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
-            "legend_location": {"llcl": 'center left', "llcr": 'center right'},
+            "legend_location": {
+                #"llul": 'upper left',
+                "llur": 'upper right'
+                },
             "sample_annot": BaseParams.get_sample_annot()
         }
         return variations_bar
