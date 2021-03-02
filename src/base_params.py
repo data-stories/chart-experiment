@@ -9,11 +9,11 @@ class BaseParams:
         }
 
     fontsizes = {
-        'fs10': 10,
-        'fs12': 12, # potentially delete
-        'fs14': 14,
+        # 'fs10': 10,
+        # 'fs12': 12, # potentially delete
+        # 'fs14': 14,
         'fs16': 16,
-        'fs18': 18
+        # 'fs18': 18
         }
 
     hues = { 
@@ -24,10 +24,10 @@ class BaseParams:
         }
 
     source_anns = {
-        "sa10": "ul",
-        "sa11": "ur",
-        "sa00": "ll",
-        "sa01": "lr",
+        # "sa10": "ul",
+        # "sa11": "ur",
+         "sa00": "ll",
+        #"sa01": "lr",
         "sano": False
         }
 
@@ -39,10 +39,9 @@ class BaseParams:
     }
 
     annotation_dist = {
-        "ad04": 0.4,
-        "ad06": 0.6,
-        "ad08": 0.8,
-        "ad11": 1.1
+        #"ad07": 0.7,
+        "ad09": 0.9,
+        #"ad11": 1.1
         }
                     
     wedge_explodes = {"we00":0, "we05": 0.05, "we10": 0.1}
