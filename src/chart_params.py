@@ -18,6 +18,7 @@ class ChartParams(BaseParams):
         self.variations_bar = self._get_bar_dict()
 
         self.pie_variations, self.donut_variations, self.bar_variations = self.get_all_variations()
+        self.all_vars = [self.pie_variations, self.donut_variations, self.bar_variations]
 
     def get_all_records(self):
         list_of_cols = [
@@ -98,11 +99,11 @@ class ChartParams(BaseParams):
     
     def get_random_sample(self,n):
         samples = {}
-
-        for i in ['pie_variations', 'donut_variations', 'bar_variations']:
-            x = [np.random.randint(0, len(eval("self."+i))+1) for j in range(n)]
-            y = [eval("self."+i+str([j])) for j in x]
-            samples[i] = y
+        titles = ['pie_variations', 'donut_variations', 'bar_variations']
+        for i in range(3):
+            x = [np.random.randint(0, len(self.all_vars[i])) for j in range(n)]
+            y = [self.all_vars[i][j] for j in x]
+            samples[titles[i]] = y
         
         return samples
     
