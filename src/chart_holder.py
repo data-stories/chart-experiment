@@ -39,7 +39,8 @@ class ChartHolder(ChartParams):
     def graph(self, chart_type, item, show=False, save=False, backend=None):
 
         self.file_name = self._get_file_name(chart_type,item)
-        self.fig, self.ax = plt.subplots(figsize=(13,13))
+        print(self.file_name)
+        self.fig, self.ax = plt.subplots(figsize=(12,12))
         self.norm = Normalize()
         if backend:
             mlp.use(backend)
@@ -56,7 +57,7 @@ class ChartHolder(ChartParams):
             self.save_chart(dpi=200, bbox_inches='tight', facecolor='w')
 
     def save_chart(self, path=None, **kwargs):
-        
+
         file_name = self.file_name
 
         if path:
@@ -84,9 +85,7 @@ class ChartHolder(ChartParams):
             y = int(location[2])
             x = int(location[3])
 
-            if int(font[2:]) >= 12:
-                self.ax.annotate('Source:\nNational\nWeather\nBureau', xy=coord_dict[(x, y)], xycoords="axes fraction")
-            elif int(font[2:]) >= 16:
+            if int(font[2:]) >= 16:
                 self.ax.annotate('Source:\nNational\nWeather\nBureau', xy=coord_dict[(x, y)], xycoords="axes fraction")
             else:
                 self.ax.annotate('Source:\nNational Weather Bureau', xy=coord_dict[(x, y)], xycoords="axes fraction")
@@ -141,10 +140,13 @@ class ChartHolder(ChartParams):
 
         self.ax.legend(wedges, labels, bbox_to_anchor=bbox)
         self.plot_source_annotation(item[3], item[8])
+        self.ax.set_title(
+            self.variations_pie['displayed_data'][item[1]]["title"],
+            fontname=font_)
         self.ax.set(
             autoscale_on=True,
-            aspect="equal",
-            title=self.variations_pie['displayed_data'][item[1]]["title"])
+            aspect="equal"
+            )
 
     def _plot_donut(self, item):
         font_ = self.variations_donut['font'][item[8]]
@@ -174,7 +176,6 @@ class ChartHolder(ChartParams):
             for i in autotext:
                 i.set_fontsize(self.variations_pie['fontsize'][item[9]]-3)
             plt.setp(autotext)
-            plt.setp(autotext)
         else:
             wedges, text = self.ax.pie(
                 vals, colors = cmap(cmap_linspace),
@@ -201,6 +202,7 @@ class ChartHolder(ChartParams):
             )
 
     def _plot_bar(self, item):
+        mlp.rcParams.update(mlp.rcParamsDefault)
         plt.rcParams['font.family'] = self.variations_bar['font'][item[9]]
         font_ = self.variations_bar['font'][item[9]]
         plt.rcParams['font.size'] = self.variations_bar['fontsize'][item[10]]
@@ -236,7 +238,7 @@ class ChartHolder(ChartParams):
                         self.ax.xaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
                     b = self.ax.barh(xs, vals, align = 'edge', color=cmap(cmap_linspace), height = w, edgecolor="black")
                     self.ax.set_yticks(pos+w/2)
-                    self.ax.set_yticklabels(labels, fontsize=14)
+                    self.ax.set_yticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b, "h", "top", font_)
                 else:
@@ -244,7 +246,7 @@ class ChartHolder(ChartParams):
                         self.ax.yaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
                     b = self.ax.bar(xs, vals, align = 'edge', color=cmap(cmap_linspace), width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w/2)
-                    self.ax.set_xticklabels(labels, fontsize=14)
+                    self.ax.set_xticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b, "v","top", font_)
             except: # for dd06 (it has two subgroups)
@@ -256,7 +258,7 @@ class ChartHolder(ChartParams):
                     b1 = self.ax.barh(xs, vals[0], label=labels[0], align = 'edge', color=cmaps_list[0], height = w, edgecolor="black")
                     b2 = self.ax.barh(xs+w+offset, vals[1], label=labels[1], align = 'edge', color=cmaps_list[1], height = w, edgecolor="black")
                     self.ax.set_yticks(pos+w+offst)
-                    self.ax.set_yticklabels(xticks, fontsize=14)
+                    self.ax.set_yticklabels(xticks, fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b1,"h", "top", font_)
                         self.autolabel(b2,"h", "top", font_)
@@ -264,7 +266,7 @@ class ChartHolder(ChartParams):
                     b1 = self.ax.bar(xs, vals[0], label=labels[0], align = 'edge', color=cmaps_list[0], width = w, edgecolor="black")
                     b2 = self.ax.bar(xs+w+offset, vals[1], label=labels[1], align = 'edge', color=cmaps_list[1], width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w+offst)
-                    self.ax.set_xticklabels(xticks, fontsize=14)
+                    self.ax.set_xticklabels(xticks, fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b1,"v", "top", font_)
                         self.autolabel(b2,"v", "top", font_)
@@ -285,7 +287,7 @@ class ChartHolder(ChartParams):
                         self.ax.xaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
                     b = self.ax.barh(xs, vals, xerr=errors, error_kw=error_kw, align = 'edge', color=cmap(cmap_linspace), height = w, edgecolor="black")
                     self.ax.set_yticks(pos+w/2)
-                    self.ax.set_yticklabels(labels, fontsize=14)
+                    self.ax.set_yticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b, "h", 'mid', font_)
                 else:
@@ -293,7 +295,7 @@ class ChartHolder(ChartParams):
                         self.ax.yaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
                     b = self.ax.bar(xs, vals, yerr=errors, error_kw=error_kw, align = 'edge', color=cmap(cmap_linspace), width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w/2)
-                    self.ax.set_xticklabels(labels,fontsize=14)
+                    self.ax.set_xticklabels(labels,fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b, "v", 'mid', font_)
             except: # for dd06 (it has two subgroups)
@@ -307,7 +309,7 @@ class ChartHolder(ChartParams):
                     b1 = self.ax.barh(xs, vals[0], xerr=errors[0], error_kw=error_kw, label=labels[0], align = 'edge', color=cmaps_list[0], height = w, edgecolor="black")
                     b2 = self.ax.barh(xs+w+offset, vals[1], xerr=errors[1], error_kw=error_kw, label=labels[1], align = 'edge', color=cmaps_list[1], height = w, edgecolor="black")
                     self.ax.set_yticks(pos+w+offst)
-                    self.ax.set_yticklabels(xticks,fontsize=14)
+                    self.ax.set_yticklabels(xticks,fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b1,"h",'mid', font_)
                         self.autolabel(b2,"h",'mid', font_)
@@ -315,7 +317,7 @@ class ChartHolder(ChartParams):
                     b1 = self.ax.bar(xs, vals[0], yerr=errors[0], error_kw=error_kw, label=labels[0], align = 'edge', color=cmaps_list[0], width = w, edgecolor="black")
                     b2 = self.ax.bar(xs+w+offset, vals[1], yerr=errors[1], error_kw=error_kw, label=labels[1], align = 'edge', color=cmaps_list[1], width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w+offst)
-                    self.ax.set_xticklabels(xticks,fontsize=14)
+                    self.ax.set_xticklabels(xticks,fontsize=14, fontname=font_)
                     if err_val[2]:
                         self.autolabel(b1,"v",'mid', font_)
                         self.autolabel(b2,"v",'mid', font_)
@@ -325,8 +327,12 @@ class ChartHolder(ChartParams):
 
         if self.variations_pie['sample_annot'][item[12]]:
             self.add_sample_annot(font_)
+        
+        self.ax.set_title(
+            self.variations_bar['displayed_data'][item[1]]["title"],
+            fontname=font_)
 
-        self.ax.set(autoscale_on=True, title=self.variations_bar['displayed_data'][item[1]]["title"])
+        self.ax.set(autoscale_on=True)
         if item[11] != 'llno':
             self.ax.legend(bbox_to_anchor=bbox)
 
@@ -353,8 +359,8 @@ class ChartHolder(ChartParams):
     def plot_source_annotation_bar(self, location, font, font_):
   
         coord_dict = {
-            (0,0): (-0.25,-0.25), # lower left sa00
-            (1,0): (1.1,-0.25), # lower right sa01
+            (0,0): (-0.25,-0.2), # lower left sa00
+            (1,0): (1.1,-0.2), # lower right sa01
             (0,1): (-0.25,1.1), # upper left sa10
             (1,1): (1.1,1.1)  # upper right sa11
         }
