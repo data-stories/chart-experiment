@@ -40,6 +40,7 @@ class ChartHolder(ChartParams):
 
         self.file_name = self._get_file_name(chart_type,item)
         self.fig, self.ax = plt.subplots(figsize=(12,12))
+
         self.norm = Normalize()
         if backend:
             mlp.use(backend)
@@ -322,6 +323,8 @@ class ChartHolder(ChartParams):
                         self.autolabel(b2,"v",percent,'mid', font_)
                 
         self.plot_source_annotation_bar(item[4], item[10], font_)
+        self.ax.spines['right'].set_visible(False)
+        self.ax.spines['top'].set_visible(False)
 
         if self.variations_pie['sample_annot'][item[12]]:
             self.add_sample_annot(font_)
@@ -341,19 +344,7 @@ class ChartHolder(ChartParams):
     def _show(self):
         plt.show()
     
-    # def precision_annotation(self, p, data, annot, font_):
-    #     if p:
-    #         if p == 1:
-    #             prec = '{:.1f}'.format(data)
-    #         elif p == 3:
-    #             prec = '{:.3f}'.format(data)
-    #         elif p == 5:
-    #             prec = '{:.5f}'.format(data)
 
-    #         string = annot.format(prec)
-
-    #         self.ax.annotate(string, xy=(1.05, 0.5), xycoords="axes fraction", fontsize=14, fontname=font_)
-    
     def plot_source_annotation_bar(self, location, font, font_):
   
         coord_dict = {
