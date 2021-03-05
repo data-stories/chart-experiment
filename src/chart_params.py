@@ -193,7 +193,8 @@ class ChartParams(BaseParams):
             "fontsize": BaseParams.get_fontsizes(),
             "legend_location": {
                 #"llul": 'upper left',
-                "llur": 'upper right'
+                "llur": 'upper right',
+                "llno": False
                 },
             "sample_annot": BaseParams.get_sample_annot()
         }
