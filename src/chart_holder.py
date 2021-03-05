@@ -39,7 +39,6 @@ class ChartHolder(ChartParams):
     def graph(self, chart_type, item, show=False, save=False, backend=None):
 
         self.file_name = self._get_file_name(chart_type,item)
-        print(self.file_name)
         self.fig, self.ax = plt.subplots(figsize=(12,12))
         self.norm = Normalize()
         if backend:
@@ -213,7 +212,7 @@ class ChartHolder(ChartParams):
         vals = self.variations_bar['displayed_data'][item[1]]["vals"]
         labels = self.variations_bar['displayed_data'][item[1]]["labels"]
         errors = self.variations_bar['displayed_data'][item[1]]["errors"]
-        prec = self.variations_bar['displayed_data'][item[1]]["annot"]
+        #prec = self.variations_bar['displayed_data'][item[1]]["annot"]
 
         cmap = self.variations_bar['hue'][item[0]]
         percent = self.variations_bar['percent_annotation'][item[3]]
@@ -240,7 +239,7 @@ class ChartHolder(ChartParams):
                     self.ax.set_yticks(pos+w/2)
                     self.ax.set_yticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b, "h", "top", font_)
+                        self.autolabel(b, "h",percent, "top", font_)
                 else:
                     if self.variations_bar['grid'][item[2]]:
                         self.ax.yaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
@@ -248,7 +247,7 @@ class ChartHolder(ChartParams):
                     self.ax.set_xticks(pos+w/2)
                     self.ax.set_xticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b, "v","top", font_)
+                        self.autolabel(b, "v",percent, "top", font_)
             except: # for dd06 (it has two subgroups)
                 cmaps_list = cmap((np.linspace(0.35, 0.5, 2)))
                 w = w/2
@@ -260,16 +259,16 @@ class ChartHolder(ChartParams):
                     self.ax.set_yticks(pos+w+offst)
                     self.ax.set_yticklabels(xticks, fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b1,"h", "top", font_)
-                        self.autolabel(b2,"h", "top", font_)
+                        self.autolabel(b1,"h",percent, "top", font_)
+                        self.autolabel(b2,"h",percent, "top", font_)
                 else:
                     b1 = self.ax.bar(xs, vals[0], label=labels[0], align = 'edge', color=cmaps_list[0], width = w, edgecolor="black")
                     b2 = self.ax.bar(xs+w+offset, vals[1], label=labels[1], align = 'edge', color=cmaps_list[1], width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w+offst)
                     self.ax.set_xticklabels(xticks, fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b1,"v", "top", font_)
-                        self.autolabel(b2,"v", "top", font_)
+                        self.autolabel(b1,"v",percent, "top", font_)
+                        self.autolabel(b2,"v",percent, "top", font_)
         #error bars
         else:
             if err_val[1] == False:
@@ -289,7 +288,7 @@ class ChartHolder(ChartParams):
                     self.ax.set_yticks(pos+w/2)
                     self.ax.set_yticklabels(labels, fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b, "h", 'mid', font_)
+                        self.autolabel(b, "h",percent, 'mid', font_)
                 else:
                     if self.variations_bar['grid'][item[2]]:
                         self.ax.yaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
@@ -297,7 +296,7 @@ class ChartHolder(ChartParams):
                     self.ax.set_xticks(pos+w/2)
                     self.ax.set_xticklabels(labels,fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b, "v", 'mid', font_)
+                        self.autolabel(b, "v",percent, 'mid', font_)
             except: # for dd06 (it has two subgroups)
                 cmaps_list = cmap(np.linspace(0.35, 0.5, 2))
                 w = w/2
@@ -311,19 +310,18 @@ class ChartHolder(ChartParams):
                     self.ax.set_yticks(pos+w+offst)
                     self.ax.set_yticklabels(xticks,fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b1,"h",'mid', font_)
-                        self.autolabel(b2,"h",'mid', font_)
+                        self.autolabel(b1,"h",percent,'mid', font_)
+                        self.autolabel(b2,"h",percent,'mid', font_)
                 else:
                     b1 = self.ax.bar(xs, vals[0], yerr=errors[0], error_kw=error_kw, label=labels[0], align = 'edge', color=cmaps_list[0], width = w, edgecolor="black")
                     b2 = self.ax.bar(xs+w+offset, vals[1], yerr=errors[1], error_kw=error_kw, label=labels[1], align = 'edge', color=cmaps_list[1], width = w, edgecolor="black")
                     self.ax.set_xticks(pos+w+offst)
                     self.ax.set_xticklabels(xticks,fontsize=14, fontname=font_)
                     if err_val[2]:
-                        self.autolabel(b1,"v",'mid', font_)
-                        self.autolabel(b2,"v",'mid', font_)
+                        self.autolabel(b1,"v",percent,'mid', font_)
+                        self.autolabel(b2,"v",percent,'mid', font_)
                 
         self.plot_source_annotation_bar(item[4], item[10], font_)
-        self.precision_annotation(percent, prec[0], prec[1], font_)
 
         if self.variations_pie['sample_annot'][item[12]]:
             self.add_sample_annot(font_)
@@ -343,18 +341,18 @@ class ChartHolder(ChartParams):
     def _show(self):
         plt.show()
     
-    def precision_annotation(self, p, data, annot, font_):
-        if p:
-            if p == 1:
-                prec = '{:.1f}'.format(data)
-            elif p == 3:
-                prec = '{:.3f}'.format(data)
-            elif p == 5:
-                prec = '{:.5f}'.format(data)
+    # def precision_annotation(self, p, data, annot, font_):
+    #     if p:
+    #         if p == 1:
+    #             prec = '{:.1f}'.format(data)
+    #         elif p == 3:
+    #             prec = '{:.3f}'.format(data)
+    #         elif p == 5:
+    #             prec = '{:.5f}'.format(data)
 
-            string = annot.format(prec)
+    #         string = annot.format(prec)
 
-            self.ax.annotate(string, xy=(1.05, 0.5), xycoords="axes fraction", fontsize=14, fontname=font_)
+    #         self.ax.annotate(string, xy=(1.05, 0.5), xycoords="axes fraction", fontsize=14, fontname=font_)
     
     def plot_source_annotation_bar(self, location, font, font_):
   
@@ -376,21 +374,35 @@ class ChartHolder(ChartParams):
             else:
                 self.ax.annotate('Source:\nNational Weather Bureau', xy=coord_dict[(x, y)], xycoords="axes fraction", fontname=font_)
     
-    def autolabel(self, rects, s, loc = "top", font_='sans'):
+    def autolabel(self, rects, s, p, loc = "top", font_='sans', fs=16):
         """Attach a text label above each bar in *rects*, displaying its height."""
-        
+
+        prec = None
+
+        if p == 1:
+            prec = '{:.1f}'
+        elif p == 3:
+            prec = '{:.3f}'
+            fs = fs - 2
+        elif p == 5:
+            prec = '{:.5f}'
+            fs = fs - 4
+        else:
+            prec = '{:.0f}'
+            
+
         if s == "h":
             for rect in rects:
                 height = rect.get_width()
                 h = height
                 if loc =='mid':
                     h = height/3
-                self.ax.annotate('{:.1f}'.format(height),
+                self.ax.annotate(prec.format(height),
                             xy=(h, rect.get_y() + rect.get_height() / 2),
                             xytext=(5, 0),
                             textcoords="offset points",
                             ha='left', va='center',
-                            fontsize = 14,
+                            fontsize = fs,
                             fontname = font_)
         elif s == "v":
             for rect in rects:
@@ -398,10 +410,10 @@ class ChartHolder(ChartParams):
                 h = height
                 if loc =='mid':
                     h = height/3
-                self.ax.annotate('{:.1f}'.format(height),
+                self.ax.annotate(prec.format(height),
                             xy=(rect.get_x() + rect.get_width() / 2, h),
                             xytext=(0, 5),
                             textcoords="offset points",
                             ha='center', va='bottom',
-                            fontsize = 14,
+                            fontsize = fs,
                             fontname = font_)
