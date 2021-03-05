@@ -58,7 +58,7 @@ class ChartParams(BaseParams):
                 item[6],
                 item[7],
                 item[8],
-                [item[9],
+                item[9],
                 item[10],
                 item[11],
                 item[2],
@@ -67,7 +67,7 @@ class ChartParams(BaseParams):
                 np.NaN,
                 np.NaN,
                 np.NaN
-            ) for item in self.donut_variations]
+                ) for item in self.donut_variations]
         
         bar_data_ = [(
             'BAR', 
