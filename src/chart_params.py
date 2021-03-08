@@ -119,6 +119,10 @@ class ChartParams(BaseParams):
                 _i = list(i)
                 _i[11] = 'llno'
                 i = tuple(_i)
+            if i[8] == 'e00a0':
+                _i = list(i)
+                _i[3] = 'pano'
+                i = tuple(_i)
             vs.append(i)
         bar_variations = list(set(vs))
 
