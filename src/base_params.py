@@ -19,8 +19,10 @@ class BaseParams:
     hues = { 
         "MG": plt.get_cmap("Greys"), 
         "MB": plt.get_cmap("Blues"), 
+        "MR": plt.get_cmap("Reds"), 
         "CL": plt.get_cmap("PuOr"), 
-        "CR": plt.get_cmap("magma")
+        "CR": plt.get_cmap("plasma"),
+        "CM": plt.get_cmap("PRGn")
         }
 
     source_anns = {
@@ -33,14 +35,14 @@ class BaseParams:
 
     percent_anns = {
         "pano": False,
-        "pa01": 1,
-        "pa03": 3,
-        "pa05": 5
+        #"pa01": 1,
+        #"pa03": 3,
+        #"pa05": 5
     }
 
     annotation_dist = {
         #"ad07": 0.7,
-        "ad09": 0.9,
+        "ad95": 0.95,
         #"ad11": 1.1
         }
                     
