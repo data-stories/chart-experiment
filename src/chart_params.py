@@ -150,7 +150,7 @@ class ChartParams(BaseParams):
                 _i[3] = 'pano'
             if i[1][:2] == 'ee':
                 _i[0] = "MG"
-                _i[5] = 'bw8'
+                _i[5] = 'bw6'
                 _i[6] = 'bov'
                 _i[7] = 'bs000'
                 _i[11] = 'llno'
@@ -213,12 +213,12 @@ class ChartParams(BaseParams):
             "source_annotation": BaseParams.get_source_anns(),
             "bars_width": {
                 #"bw3": 0.3, 
-                "bw4": 0.4, 
+                "bw5": 0.5, 
                 "bw6": 0.6, 
-                "bw8": 0.8
+                "bw7": 0.7
                 },
             "orientation": {"boh": "h", "bov": "v"},
-            "bar_spacing": {"bs000": 0, "bs025": 0.025, "bs050": 0.05},
+            "bar_spacing": {"bs000": 0, "bs025": 0.025, "bs040": 0.04},
             # below tuple represents (errorbar, errorbar line cap, value annotation location)
             "errorbar_value-loc": {
                 "e00a0": (False, False, False), 
