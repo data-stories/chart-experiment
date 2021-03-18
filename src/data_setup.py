@@ -9,6 +9,21 @@ class PlottedData:
     def __init__(self):
         self.DATA = self.raw[self.raw["year"].isin([2017,2018,2019])]
 
+        self.MONTHS  = [
+                   "Jan",
+                   "Feb",
+                   "Mar",
+                   "Apr",
+                   "May",
+                   "Jun",
+                   "Jul",
+                   "Aug",
+                   "Sep",
+                   "Oct",
+                   "Nov",
+                   "Dec"
+        ]
+
         # cloudiness data
         d = self.DATA.groupby(["year", "month", "clouds"]).count().iloc[:,:1].rename(columns={"temp":"count"})
 
@@ -89,25 +104,10 @@ class PlottedData:
     def _get_dd12_PP_PD(self):
         data_2017 = self.DATA[self.DATA["year"] == 2017]
         rain_by_month = data_2017.loc[:,['month', 'dates']][data_2017["rain"] > 1].groupby("month").count()
-    
-        PP_PD_12_labels = [
-                   "Jan",
-                   "Feb",
-                   "Mar",
-                   "Apr",
-                   "May",
-                   "Jun",
-                   "Jul",
-                   "Aug",
-                   "Sep",
-                   "Oct",
-                   "Nov",
-                   "Dec"
-        ]
        
         dd12 = {
             "vals": [i[0] for i in rain_by_month.values.tolist()],
-            "labels": PP_PD_12_labels,
+            "labels": self.MONTHS,
             "title": "Number of Rainy Days by Month",
             "sample": "12 months"
         }
@@ -138,25 +138,11 @@ class PlottedData:
         return dd06
 
     def _get_dd12_PB(self):
-        PB_12_labels = [
-                   "Jan",
-                   "Feb",
-                   "Mar",
-                   "Apr",
-                   "May",
-                   "Jun",
-                   "Jul",
-                   "Aug",
-                   "Sep",
-                   "Oct",
-                   "Nov",
-                   "Dec"
-        ]
-
+       
         dd12 = {
             "vals": list(self.DATA.loc[:,['month', 'temp']].groupby("month").mean().values.reshape((1,12))[0]),
             "errors": list(self.DATA.loc[:,['month', 'temp']].groupby("month").std().values.reshape((1,12))[0]),
-            "labels": PB_12_labels,
+            "labels": self.MONTHS,
             "title": "Average Temperature by Month",
             "sample": "12 months"
         }
@@ -238,24 +224,11 @@ class PlottedData:
     def _get_dd10_PP_PD(self):
         data_2019 = self.DATA[self.DATA["year"] == 2019]
 
-        PP_PD_10_labels = [
-                   "Mar",
-                   "Apr",
-                   "May",
-                   "Jun",
-                   "Jul",
-                   "Aug",
-                   "Sep",
-                   "Oct",
-                   "Nov",
-                   "Dec"
-        ]
-
         dd10 = {
             "vals": [
                 round(i,1) for i in data_2019.groupby(['month']).mean().loc[3:,["rain"]].values.reshape(10)
                 ],
-            "labels": PP_PD_10_labels,
+            "labels": self.MONTHS[3:],
             "title": "Average Rainfall by Month (in mm)",
             "sample": "10 months"
         }
