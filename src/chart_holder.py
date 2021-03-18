@@ -152,9 +152,9 @@ class ChartHolder(ChartParams):
                     columnspacing=0.3,
                     handletextpad=0.3, 
                     bbox_to_anchor=self.bbox_dict[item[9]],
-                    prop={'size': 12}
+                    prop={'size': 11}
                 )
-        else:
+        elif item[1][:2] == 'dd':
             self.ax.legend(wedges, labels, bbox_to_anchor=self.bbox_dict[item[9]], prop={'size': 13})
         self.plot_source_annotation(item[3], item[8])
        
@@ -205,7 +205,7 @@ class ChartHolder(ChartParams):
                 startangle=startangle)
             for label in text:
                 label.set_horizontalalignment('center')
-            plt.setp(text, fontsize=13)
+            plt.setp(text, fontsize=12)
 
         if item[1] == 'dd28':
             self.ax.legend(
@@ -216,11 +216,10 @@ class ChartHolder(ChartParams):
                     columnspacing=0.3,
                     handletextpad=0.3, 
                     bbox_to_anchor=self.bbox_dict[item[10]],
-                    prop={'size': 12}
+                    prop={'size': 11}
                 )
-        else:
+        elif item[1][:2] == 'dd':
             self.ax.legend(wedges, labels, bbox_to_anchor=self.bbox_dict[item[10]], prop={'size': 13})
-        
         self.plot_source_annotation(item[4],item[9])
 
         if self.variations_pie['sample_annot'][item[11]]:
@@ -239,7 +238,6 @@ class ChartHolder(ChartParams):
         plt.rcParams['font.size'] = self.variations_bar['fontsize'][item[10]]
         if item[11] != 'llno':
             plt.rcParams['legend.loc'] = self.variations_bar['legend_location'][item[11]]
-            bbox = self.bbox_dict[item[11]]
         
         self.fig, self.ax = plt.subplots(figsize=(8,8))
 
@@ -309,7 +307,7 @@ class ChartHolder(ChartParams):
                     for i in range(n):
                         bs_["b"+str(i)] = self.ax.barh(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], height = w, edgecolor="black")
                    
-                    self.ax.set_yticks(pos+(n/2)*(w+offset/2))
+                    self.ax.set_yticks(pos+(n/2)*(w+offset))
                     self.ax.set_yticklabels(xticks, fontsize=14)
 
                     if err_val[2]:
@@ -323,7 +321,7 @@ class ChartHolder(ChartParams):
                     for i in range(n):
                         bs_["b"+str(i)] = self.ax.bar(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], width = w, edgecolor="black")
                     
-                    self.ax.set_xticks(pos+(n/2)*(w+offset/2))
+                    self.ax.set_xticks(pos+(n/2)*(w+offset))
                     if item[1] == 'dd20':
                         self.ax.set_xticklabels(xticks, fontsize=11)
                     else:
@@ -397,9 +395,9 @@ class ChartHolder(ChartParams):
         # plot legend
         if item[11] != 'llno':
             if item[1] == 'dd24':
-                self.ax.legend(bbox_to_anchor=bbox,labelspacing=0.2,prop={'size': 13})
+                self.ax.legend(bbox_to_anchor=self.bbox_dict[item[11]],labelspacing=0.2,prop={'size': 11})
             else:
-                self.ax.legend(bbox_to_anchor=bbox, prop={'size': 13})
+                self.ax.legend(bbox_to_anchor=self.bbox_dict[item[11]], prop={'size': 13})
         
         self.ax.set(
                 title=self.variations_bar['displayed_data'][item[1]]["title"], #set title
@@ -412,10 +410,10 @@ class ChartHolder(ChartParams):
     
     def plot_source_annotation_bar(self, location):
         coord_dict = {
-            (0,0): (-0.2,-0.2), # lower left sa00
-            (1,0): (1.1,-0.2), # lower right sa01
-            (0,1): (-0.25,1.1), # upper left sa10
-            (1,1): (1.1,1.1)  # upper right sa11
+            (0,0): (-0.2,-0.15), # lower left sa00
+            (1,0): (1.1,-0.2), # lower right sa01 #not checked
+            (0,1): (-0.25,1.1), # upper left sa10 #not checked
+            (1,1): (1.1,1.1)  # upper right sa11 #not checked
         }
 
         if location:
