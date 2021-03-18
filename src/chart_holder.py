@@ -137,7 +137,7 @@ class ChartHolder(ChartParams):
             )
             for label in text:
                 label.set_horizontalalignment('center')
-            plt.setp(text, fontsize=13)
+            plt.setp(text, fontsize=12)
 
         if self.variations_pie['sample_annot'][item[10]]:
             annot = self.variations_pie['displayed_data'][item[1]]["sample"]
@@ -307,7 +307,7 @@ class ChartHolder(ChartParams):
                     for i in range(n):
                         bs_["b"+str(i)] = self.ax.barh(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], height = w, edgecolor="black")
                    
-                    self.ax.set_yticks(pos+(n/2)*(w+offset))
+                    self.ax.set_yticks(pos+(n/2)*(w+offset/2))
                     self.ax.set_yticklabels(xticks, fontsize=14)
 
                     if err_val[2]:
@@ -321,7 +321,7 @@ class ChartHolder(ChartParams):
                     for i in range(n):
                         bs_["b"+str(i)] = self.ax.bar(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], width = w, edgecolor="black")
                     
-                    self.ax.set_xticks(pos+(n/2)*(w+offset))
+                    self.ax.set_xticks(pos+(n/2)*(w+offset/2))
                     if item[1] == 'dd20':
                         self.ax.set_xticklabels(xticks, fontsize=11)
                     else:
