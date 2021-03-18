@@ -108,21 +108,53 @@ class ChartParams(BaseParams):
         return samples
     
     def get_all_variations(self):
-        pie_variations = self._get_variations(self.variations_pie)
-        donut_variations = self._get_variations(self.variations_donut)
+        pie_variations_raw = self._get_variations(self.variations_pie)
+        donut_variations_raw = self._get_variations(self.variations_donut)
         bar_variations_raw = self._get_variations(self.variations_bar)
 
-        # getting rid of legend variations for dd02 & dd12 in bar_variations
+        # cleaning empty chart duplicates
+        vs = []
+        for i in pie_variations_raw:
+            _i = list(i)
+            if i[1][:2] == 'ee':
+                _i[0] = "MG"
+                _i[2] = 'we00'
+                _i[4] = 'ro000'
+                _i[9] = 'llcl'
+            i = tuple(_i)
+            vs.append(i)
+        pie_variations = list(set(vs))
+
+        # cleaning empty chart duplicates
+        vs = []
+        for i in donut_variations_raw:
+            _i = list(i)
+            if i[1][:2] == 'ee':
+                _i[0] = "MG"
+                _i[2] = 'dh2'
+                _i[3] = 'we00'
+                _i[5] = 'ro000'
+                _i[10] = 'llcl'
+            i = tuple(_i)
+            vs.append(i)
+        donut_variations = list(set(vs))
+
+        # getting rid of duplicate variations (for empty chars, legend dd02,03,12,28, etc)
         vs = []
         for i in bar_variations_raw:
-            if i[1] in ['dd02','dd12']:
-                _i = list(i)
+            _i = list(i)
+            if i[1] in ['dd02','dd12','dd03','dd28']:
                 _i[11] = 'llno'
-                i = tuple(_i)
+                _i[7] = 'bs000'
             if i[8] == 'e00a0':
-                _i = list(i)
                 _i[3] = 'pano'
-                i = tuple(_i)
+            if i[1][:2] == 'ee':
+                _i[0] = "MG"
+                _i[5] = 'bw8'
+                _i[6] = 'bov'
+                _i[7] = 'bs000'
+                _i[11] = 'llno'
+            i = tuple(_i)
             vs.append(i)
         bar_variations = list(set(vs))
 
@@ -133,9 +165,10 @@ class ChartParams(BaseParams):
         return list(combinations)
     
     def _get_pie_dict(self):
+
         variations_pie = {
             "hue": BaseParams.get_hues(),
-            "displayed_data": self.DATA_DICT["data_donut_pie"],
+            "displayed_data": {**self._get_empty_data('pd'),**self.DATA_DICT["data_donut_pie"]},
             "wedge_explode": BaseParams.get_wedge_explodes(),
             "source_annotation": BaseParams.get_source_anns(),
             "orientation": BaseParams.get_orientations(),
@@ -144,7 +177,7 @@ class ChartParams(BaseParams):
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
             "legend_location": {
-                #"llcl": 'center left',
+                "llcl": 'center left',
                 "llcr": 'center right'
                 },
             "sample_annot": BaseParams.get_sample_annot()
@@ -154,7 +187,7 @@ class ChartParams(BaseParams):
     def _get_donut_dict(self):
         variations_donut = {
             "hue": BaseParams.get_hues(),
-            "displayed_data": self.DATA_DICT["data_donut_pie"],
+            "displayed_data": {**self._get_empty_data('pd'),**self.DATA_DICT["data_donut_pie"]},
             "donuthole_size": {"dh2": 0.2, "dh5": 0.5, "dh8": 0.8},
             "wedge_explode": BaseParams.get_wedge_explodes(),
             "source_annotation": BaseParams.get_source_anns(),
@@ -164,7 +197,7 @@ class ChartParams(BaseParams):
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
             "legend_location": {
-                #"llcl": 'center left',
+                "llcl": 'center left',
                 "llcr": 'center right'
                 },
             "sample_annot": BaseParams.get_sample_annot()
@@ -174,7 +207,7 @@ class ChartParams(BaseParams):
     def _get_bar_dict(self):
         variations_bar = {
             "hue": BaseParams.get_hues(),
-            "displayed_data": self.DATA_DICT["data_bar"],
+            "displayed_data": {**self._get_empty_data('bar'),**self.DATA_DICT["data_bar"]},
             "grid": {"gr00": False, "gr0y": True},
             "percent_annotation": BaseParams.get_percent_anns(),
             "source_annotation": BaseParams.get_source_anns(),
@@ -189,17 +222,69 @@ class ChartParams(BaseParams):
             # below tuple represents (errorbar, errorbar line cap, value annotation location)
             "errorbar_value-loc": {
                 "e00a0": (False, False, False), 
-                "e00a1": (False, False, "top"), 
-                "e10a1": (True, False, "mid"), 
-                "e11a1": (True, True, "mid")
+                #"e00a1": (False, False, "top"), 
+                #"e10a1": (True, False, "mid"), 
+                #"e11a1": (True, True, "mid")
                 },
             "font": BaseParams.get_fonts(),
             "fontsize": BaseParams.get_fontsizes(),
             "legend_location": {
-                #"llul": 'upper left',
-                "llur": 'upper right',
-                "llno": False
+                "llul": 'upper left',
+                "llur": 'upper right'
+                #"llno": False
                 },
             "sample_annot": BaseParams.get_sample_annot()
         }
         return variations_bar
+    
+    
+    def _get_empty_data(self, type):
+
+        samples = ["3 years","2 years","1095 days","12 months","10 months","6 months"]
+        titles = [
+            "Number of Days by Rainfall (in mm)",
+            "Average Number of Rainy Days in the Spring",
+            "Average Temperature by Month",
+            "Number of Rainy Days",
+            "Average Cloundiness by Month"
+            ]
+        
+        combs = list(product(samples,titles))
+
+        if type == 'bar':
+            pb = {}
+            c = 1
+            for i in combs:
+                if c < 10:
+                    name = 'ee0'+str(c)
+                else:
+                    name = 'ee'+str(c)
+                pb[name] = {
+                    "vals": [0 for i in range(10)],
+                    "errors": [0 for i in range(10)],
+                    "labels": [None]*10,
+                    'xticks': [i for i in range(10)],
+                    "title": i[1],
+                    "sample": i[0]
+                }
+                c +=1
+            
+            return pb
+
+        if type == 'pd':
+            pd_p = {}
+            c = 1
+            for i in combs:
+                if c < 10:
+                    name = 'ee0'+str(c)
+                else:
+                    name = 'ee'+str(c)
+                pd_p[name] = {
+                    "vals": [0,0,0],
+                    "labels": [None,None,None],
+                    "title": i[1],
+                    "sample": i[0]
+                }
+                c +=1
+            
+            return pd_p
