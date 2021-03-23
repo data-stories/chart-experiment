@@ -20,8 +20,8 @@ class BaseParams:
         "MG": plt.get_cmap("Greys"), 
         "MB": plt.get_cmap("Blues"), 
         "MR": plt.get_cmap("Reds"), 
-        "CL": plt.get_cmap("PuOr"), 
-        "CR": plt.get_cmap("plasma"),
+        "CL": plt.get_cmap("RdYlBu"), 
+        "CR": plt.get_cmap("viridis"),
         "CM": plt.get_cmap("PRGn")
         }
 

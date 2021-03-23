@@ -213,12 +213,12 @@ class ChartParams(BaseParams):
             "source_annotation": BaseParams.get_source_anns(),
             "bars_width": {
                 #"bw3": 0.3, 
-                "bw5": 0.5, 
+                "bw4": 0.4, 
                 "bw6": 0.6, 
-                "bw7": 0.7
+                "bw8": 0.8
                 },
             "orientation": {"boh": "h", "bov": "v"},
-            "bar_spacing": {"bs000": 0, "bs025": 0.025, "bs040": 0.04},
+            "bar_spacing": {"bs000": 0, "bs020": 0.02, "bs040": 0.04},
             # below tuple represents (errorbar, errorbar line cap, value annotation location)
             "errorbar_value-loc": {
                 "e00a0": (False, False, False), 
