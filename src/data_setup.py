@@ -65,6 +65,7 @@ class PlottedData:
                 }
     
     def _get_dd02_PP_PD(self):
+        data_2017 = self.DATA[self.DATA.year==2017]
 
         dd02 = {
             "vals": [len(data_2017[data_2017["rain"] <= 1]), len(data_2017[data_2017["rain"] > 1])],
