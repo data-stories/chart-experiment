@@ -11,8 +11,8 @@ class ChartHolder(ChartParams):
     CHART_TYPES = {'pie': 'self._plot_pie', 'donut':'self._plot_donut', 'bar':'self._plot_bar'}
 
     bbox_dict = { # for legend location
-            "llul": (-0.2, 1.2),
-            "llur": (1.2, 1.2),
+            "llul": (-0.2, 1.15),
+            "llur": (1.15, 1.15),
             "llcl": (-0.2, 0.5),
             "llcr": (1.2, 0.5)
         }
@@ -88,10 +88,10 @@ class ChartHolder(ChartParams):
             else:
                 self.ax.annotate('Source:\nNational Weather Bureau', xy=coord_dict[(x, y)], xycoords="axes fraction")
 
-    def add_sample_annot(self, text, **kwargs):
-        txt = "The sample size\nis {}".format(text)
+    def add_sample_annot(self, text, loc, **kwargs):
+        txt = "n={}".format(text)
 
-        self.ax.annotate(txt, xy=(0.44, 1.1), xycoords="axes fraction", **kwargs)
+        self.ax.annotate(txt, xy=loc, xycoords="axes fraction", **kwargs)
 
     def _plot_pie(self, item):
 
@@ -141,7 +141,7 @@ class ChartHolder(ChartParams):
 
         if self.variations_pie['sample_annot'][item[10]]:
             annot = self.variations_pie['displayed_data'][item[1]]["sample"]
-            self.add_sample_annot(annot)
+            self.add_sample_annot(annot, (0.9,-0.1))
         
         if item[1] == 'dd28':
             self.ax.legend(
@@ -222,9 +222,9 @@ class ChartHolder(ChartParams):
             self.ax.legend(wedges, labels, bbox_to_anchor=self.bbox_dict[item[10]], prop={'size': 13})
         self.plot_source_annotation(item[4],item[9])
 
-        if self.variations_pie['sample_annot'][item[11]]:
+        if self.variations_donut['sample_annot'][item[11]]:
             annot = self.variations_donut['displayed_data'][item[1]]["sample"]
-            self.add_sample_annot(annot)
+            self.add_sample_annot(annot, (0.9,-0.1))
 
         self.ax.set(
             autoscale_on=True,
@@ -256,9 +256,12 @@ class ChartHolder(ChartParams):
         pos = np.arange(len(labels))
         
         try:
-            xs = np.arange(len(vals[0]))
+            xs = np.arange(len(vals[0])) # subgroups
+            n = len(vals)
+            w_ = (w-(n-1)*offset)/n
         except TypeError:
             xs = np.arange(len(vals))
+            w_ = w
         
         # no error bars
         if err_val[0] == False:
@@ -266,48 +269,43 @@ class ChartHolder(ChartParams):
                 if self.variations_bar['orientation'][item[6]] == 'h':
                     if self.variations_bar['grid'][item[2]]:
                         self.ax.xaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
-                    b = self.ax.barh(xs, vals, align = 'edge', color=cmap(cmap_linspace), height = w, edgecolor="black")
-                    self.ax.set_yticks(pos+w/2)
+                    b = self.ax.barh(xs, vals, align = 'edge', color=cmap(cmap_linspace), height = w_, edgecolor="black")
+                    self.ax.set_yticks(xs+w_/2)
                     self.ax.set_yticklabels(labels, fontsize=14)
                     if err_val[2]:
                         self.autolabel(b, "h",percent, "top")
                 else:
                     if self.variations_bar['grid'][item[2]]:
                         self.ax.yaxis.grid(True, linestyle='--', which='major', color='grey', alpha=.5)
-                    b = self.ax.bar(xs, vals, align = 'edge', color=cmap(cmap_linspace), width = w, edgecolor="black")
-                    self.ax.set_xticks(pos+w/2)
+                    b = self.ax.bar(xs, vals, align = 'edge', color=cmap(cmap_linspace), width = w_, edgecolor="black")
+                    self.ax.set_xticks(xs+w_/2)
                     if item[1] == 'dd28':
                         self.ax.set_xticklabels(labels, fontsize=11)
                     else:
                         self.ax.set_xticklabels(labels, fontsize=14)
                     if err_val[2]:
-                        self.autolabel(b, "v",percent, "top")
+                        self.autolabel(b, "v", percent, "top")
             except: # for dd06,dd09,... (it has two subgroups)
                 cmaps_list = None
                 
                 if item[1] in ['dd09','dd15','dd18']:
-                    w = w/3
                     cmaps_list = cmap((np.linspace(0.3, 0.6, 3)))
                 elif item[1] == 'dd25':
-                    w = w/5
-                    cmaps_list = cmap((np.linspace(0.3, 0.7, 5)))
+                    cmaps_list = cmap((np.linspace(0.25, 0.75, 5)))
                 elif item[1] == 'dd24':
-                    w = w/8
-                    cmaps_list = cmap((np.linspace(0.3, 0.8, 8)))
+                    cmaps_list = cmap((np.linspace(0.2, 0.8, 8)))
                 else: #dd10,dd20
-                    w = w/2
-                    cmaps_list = cmap((np.linspace(0.4, 0.6, 2)))
+                    cmaps_list = cmap((np.linspace(0.3, 0.6, 2)))
                 xticks = self.variations_bar['displayed_data'][item[1]]['xticks']
                 
                 n = len(labels)
-                pos = np.arange(len(xticks))
                 # HORIZONTAL
                 if self.variations_bar['orientation'][item[6]] == 'h':
-                    bs_ = {}
-                    for i in range(n):
-                        bs_["b"+str(i)] = self.ax.barh(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], height = w, edgecolor="black")
+                    bs_ = {
+                        "b"+str(i): self.ax.barh(xs+i*(w_+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], height = w_, edgecolor="black") for i in range(n)
+                    }
                    
-                    self.ax.set_yticks(pos+(n/2)*(w+offset/2))
+                    self.ax.set_yticks(xs+0.5*(n*w_+(n-1)*offset))
                     self.ax.set_yticklabels(xticks, fontsize=14)
 
                     if err_val[2]:
@@ -316,26 +314,23 @@ class ChartHolder(ChartParams):
 
                 # VERTICAL
                 else:
-                    bs_ = {}
+                    bs_ = {
+                        "b"+str(i): self.ax.bar(xs+i*(w_+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], width = w_, edgecolor="black") for i in range(n)
+                    }
                     
-                    for i in range(n):
-                        bs_["b"+str(i)] = self.ax.bar(xs+i*(w+offset), vals[i], label=labels[i], align = 'edge', color=cmaps_list[i], width = w, edgecolor="black")
-                    
-                    self.ax.set_xticks(pos+(n/2)*(w+offset/2))
+                    self.ax.set_xticks(xs+0.5*(n*w_+(n-1)*offset))
                     if item[1] == 'dd20':
                         self.ax.set_xticklabels(xticks, fontsize=11)
                     else:
                         self.ax.set_xticklabels(xticks, fontsize=14)
+
                     if err_val[2]:
                         for v in bs_.values():
                             self.autolabel(v, "v", percent, "top")
 
         #error bars NOT IMPLEMENTED FOR ANYTHING BUT dd02,dd06,dd12
         else:
-            if err_val[1] == False:
-                error_kw={"capsize": 0}
-            else:
-                error_kw={"capsize": 5 }
+            error_kw={"capsize": 0} if err_val[1] == False else {"capsize": 5 }
 
             try: #dd02/12
                 if self.variations_bar['orientation'][item[6]] == 'h':
@@ -386,7 +381,7 @@ class ChartHolder(ChartParams):
         # plot sample annotation
         if self.variations_bar['sample_annot'][item[12]]:
             annot = self.variations_bar['displayed_data'][item[1]]["sample"]
-            self.add_sample_annot(annot)
+            self.add_sample_annot(annot, (0.8,-0.15))
         
         # remove part of the axes (top and right)
         self.ax.spines['right'].set_visible(False)
@@ -410,7 +405,7 @@ class ChartHolder(ChartParams):
     
     def plot_source_annotation_bar(self, location):
         coord_dict = {
-            (0,0): (-0.2,-0.15), # lower left sa00
+            (0,0): (-0.15,-0.15), # lower left sa00
             (1,0): (1.1,-0.2), # lower right sa01 #not checked
             (0,1): (-0.25,1.1), # upper left sa10 #not checked
             (1,1): (1.1,1.1)  # upper right sa11 #not checked
