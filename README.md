@@ -1,3 +1,0 @@
-# chart-generator
-
-(under construction)
