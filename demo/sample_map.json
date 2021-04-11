@@ -1,0 +1,139 @@
+{
+    "displayed_data": {
+        "pie": {
+            "dd06": {
+                "vals": [2, 6, 7, 8, 4, 5],
+                "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                "title": "Number of Sunny Days",
+                "sample": "10 weeks"
+            },
+            "dd12": {
+                "vals": [55, 21, 76, 93, 134, 110, 142, 121, 89, 54, 32, 36],
+                "labels": [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
+                ],
+                "title": "Number of Sunny Days",
+                "sample": "5 years"
+            }
+        },
+        "bar": {
+            "dd06": {
+                "vals": [23, 21, 17, 13, 6, 11],
+                "errors": [2.33, 3.11, 2.16, 4.15, 3.16, 1.47],
+                "xticks": ["Clear"],
+                "labels": ["March", "April", "May", "June", "July", "August"],
+                "title": "Average Cloundiness by Month",
+                "sample": "8 months"
+            },
+            "dd12": {
+                "vals": [
+                    [22, 21, 11],
+                    [19, 23, 14],
+                    [25, 20, 13],
+                    [23, 17, 8]
+                ],
+                "errors": [
+                    [2.33, 3.11, 2.16],
+                    [3.11, 2.16, 4.15],
+                    [2.13, 2.16, 4.15],
+                    [2.33, 2.11, 4.15]
+                ],
+                "xticks": ["Clear", "Partly\nCloudy", "Very\nCloudy"],
+                "labels": ["March", "April", "May", "June"],
+                "title": "Average Cloundiness by Month",
+                "sample": "8 months"
+            }
+        }
+    },
+
+    "fonts": {
+        "ftse": "serif",
+        "ftns": "sans-serif",
+        "ftfa": "fantasy"
+    },
+
+    "fontsizes": {
+        "fs10": 10,
+        "fs12": 12,
+        "fs14": 14,
+        "fs16": 16,
+        "fs18": 18
+    },
+
+    "hues": {
+        "MG": "Greys",
+        "MB": "Blues",
+        "MR": "Reds",
+        "CL": "RdYlBu",
+        "CR": "viridis",
+        "CM": "PRGn"
+    },
+
+    "sample_annot": { "sm0": false, "sm1": true },
+
+    "source_anns": {
+        "sa10": "upper left",
+        "sa11": "upper left",
+        "sa00": "lower left",
+        "sa01": "lower right",
+        "sano": false
+    },
+
+    "percent_anns": {
+        "pano": false,
+        "pa01": 1,
+        "pa03": 3,
+        "pa05": 5
+    },
+
+    "annotation_dist": {
+        "ad07": 0.7,
+        "ad95": 0.95,
+        "ad11": 1.1
+    },
+
+    "wedge_explodes": { "we00": 0, "we05": 0.05, "we10": 0.1 },
+
+    "orientations": { "ro000": 0, "ro090": 90, "ro270": 270 },
+
+    "orientation": { "boh": "h", "bov": "v" },
+
+    "donuthole_size": { "dh2": 0.2, "dh5": 0.5, "dh8": 0.8 },
+
+    "grid": { "gr00": false, "gr0y": true },
+
+    "bar_spacing": { "bs000": 0, "bs020": 0.02, "bs040": 0.04 },
+
+    "bars_width": {
+        "bw3": 0.3,
+        "bw4": 0.4,
+        "bw6": 0.6,
+        "bw8": 0.8
+    },
+
+    "errorbar_value-loc": {
+        "e00a0": [false, false, false],
+        "e00a1": [false, false, "top"],
+        "e10a1": [true, false, "mid"],
+        "e11a1": [true, true, "mid"]
+    },
+
+    "legend_location": {
+        "llcl": "center left",
+        "llcr": "center right",
+        "llul": "upper left",
+        "llur": "upper right",
+        "llno": false
+    }
+}
