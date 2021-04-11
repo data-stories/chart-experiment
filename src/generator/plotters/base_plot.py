@@ -15,7 +15,7 @@ class BasePlot:
         self.labels = labels
         self.title = title
         self.cmap = plt.get_cmap(cmap)
-        self.cmap_linspace = np.linspace(0, 1, len(self.vals)*2)[(len(self.vals)//2):len(self.vals)+(len(self.vals)//2)]
+        self.cmap_linspace = np.linspace(0.1, 0.9, len(self.vals))
 
         self.font_size = font_size
         self.legend_loc = legend_loc

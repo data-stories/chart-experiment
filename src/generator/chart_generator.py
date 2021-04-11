@@ -1,10 +1,10 @@
 import multiprocessing
 import os
 
-from parameter_mapping import ParamsMap
+from .parameter_mapping import ParamsMap
 
-from plotters.bar import BarPlot
-from plotters.pie import PiePlot
+from .plotters.bar import BarPlot
+from .plotters.pie import PiePlot
 
 
 class ChartGenerator(ParamsMap):

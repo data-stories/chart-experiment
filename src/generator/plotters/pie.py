@@ -34,10 +34,10 @@ class PiePlot(BasePlot):
         self.dh_size=dh_size
 
         self.coord_dict = {
-            "lower left": (-0.2,-0.1), #lower left
-            "lower right": (1, -0.1), #lower right
-            "upper left": (-0.3,1), #upper left
-            "upper right": (1,1) #upper right
+            "lower left": (-0.2,-0.1),
+            "lower right": (1, -0.1), 
+            "upper left": (-0.2,1),
+            "upper right": (1,1)
         }
 
         self.plot()
@@ -76,7 +76,7 @@ class PiePlot(BasePlot):
 
         #plotting legend
         if self.source_annot:
-            self.plot_source_annotation("upper left", self.coord_dict)
+            self.plot_source_annotation("lower left", self.coord_dict)
 
         if self.sample_annot:
             self.add_sample_annot(self.sample_annot_text, (0.9,-0.1))
