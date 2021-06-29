@@ -52,7 +52,8 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
     for k,v in PARAM_MAP.items():
         if (not relevant_params or k in relevant_params):
             dataframe[k] = dataframe[target_col].str.extract(v, expand=True)
-            dataframe[k] = dataframe[k].str.replace(PARAM_MAP[k][1:3], "")
+            if k != 'error':
+                dataframe[k] = dataframe[k].str.replace(PARAM_MAP[k][1:3], "")
             if k in NUMERIC:
                 dataframe[k] = pd.to_numeric(dataframe[k], errors='coerce')
             if k == 'precision':
@@ -73,7 +74,7 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
                     dataframe[i] /= 10
 
     try:
-        dataframe['error_bar'] = dataframe['error'].str.extract(r'^(..)', expand=True)
+        dataframe['error_bar'] = dataframe['error'].str.extract(r'(e..)', expand=True)
         dataframe['label'] = dataframe['error'].str.extract(r'(a.)', expand=True)
 
         for (i,j) in [
