@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 
 def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='crowdsource', ans_3=False):
-    """Only fully implemented for Crowdsource; should work with Prolific & MTurk
-
+    """Returns datafame with parsed parameters in columns
     Args:
         dataframe (Dataframe): Data in Pandas dataframe
         target_col (str): name of the column in dataframe that holds the chart names. Eg. 'question_id'.
@@ -56,10 +55,13 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
                 dataframe[k] = dataframe[k].str.replace(PARAM_MAP[k][1:3], "")
             if k in NUMERIC:
                 dataframe[k] = pd.to_numeric(dataframe[k], errors='coerce')
-            if k == 'precision':
-                dataframe["precision"].fillna(0, inplace=True)
-            if k == 'bar_spacing':
-                dataframe["bar_spacing"] /= 1000
+                if k == 'precision':
+                    dataframe["precision"].fillna(0, inplace=True)
+                if k == 'bar_spacing':
+                    dataframe["bar_spacing"] /= 1000
+                for i in ['bar_width','annotation_dist', 'donut_hole']:
+                    if i == k:
+                        dataframe[i] /= 10
             if k == 'source':
                 dataframe['source'].replace("no", False, inplace=True)
                 dataframe['source'].replace(r"..", True, regex=True, inplace=True)
@@ -69,9 +71,6 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
             if k == 'grid':
                 dataframe['grid'].replace('gr00', False, inplace=True)
                 dataframe['grid'].replace('gr0y', True, inplace=True)
-            for i in ['bar_width','annotation_dist', 'donut_hole']:
-                if i == k:
-                    dataframe[i] /= 10
 
     try:
         dataframe['error_bar'] = dataframe['error'].str.extract(r'(e..)', expand=True)
@@ -92,7 +91,8 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
 
     except KeyError:
         pass
-
+    
+    # convert mturk & prolific answers from str to bool/nan
     if ans_source.lower() != 'crowdsource':
         dataframe['answer'].replace('yes', True, inplace=True)
         dataframe['answer'].replace('no', False, inplace=True)
