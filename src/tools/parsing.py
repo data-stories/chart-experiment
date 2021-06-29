@@ -72,11 +72,9 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
                 if i == k:
                     dataframe[i] /= 10
 
-
-
     try:
-        dataframe['error_bar'] = dataframe['error'].str.extract(r'(e..)',expand=True)
-        dataframe['label'] = dataframe['error'].str.extract(r'(a.)',expand=True)
+        dataframe['error_bar'] = dataframe['error'].str.extract(r'^(..)', expand=True)
+        dataframe['label'] = dataframe['error'].str.extract(r'(a.)', expand=True)
 
         for (i,j) in [
             ('e10','line'),
@@ -90,10 +88,6 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
 
         # remove intermediary column
         dataframe.drop(columns=["error"], inplace=True)
-
-        
-        
-            
 
     except KeyError:
         pass
