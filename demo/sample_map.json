@@ -33,7 +33,7 @@
                 "errors": [2.33, 3.11, 2.16, 4.15, 3.16, 1.47],
                 "xticks": ["Clear"],
                 "labels": ["March", "April", "May", "June", "July", "August"],
-                "title": "Average Cloundiness by Month",
+                "title": "Average Cloudiness by Month",
                 "sample": "8 months"
             },
             "dd12": {
@@ -51,7 +51,7 @@
                 ],
                 "xticks": ["Clear", "Partly\nCloudy", "Very\nCloudy"],
                 "labels": ["March", "April", "May", "June"],
-                "title": "Average Cloundiness by Month",
+                "title": "Average Cloudiness by Month",
                 "sample": "8 months"
             }
         }
