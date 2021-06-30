@@ -71,15 +71,17 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
             if k == 'grid':
                 dataframe['grid'].replace('gr00', False, inplace=True)
                 dataframe['grid'].replace('gr0y', True, inplace=True)
+            if k == 'bar_orientation':
+                dataframe['bar_orientation'] = dataframe['bar_orientation'].str.upper()
 
     try:
         dataframe['error_bar'] = dataframe['error'].str.extract(r'(e..)', expand=True)
         dataframe['label'] = dataframe['error'].str.extract(r'(a.)', expand=True)
 
         for (i,j) in [
-            ('e10','line'),
-            ('e11','cap'),
-            ('e00','none')
+            ('e10','Line'),
+            ('e11','Cap'),
+            ('e00','None')
         ]:
             dataframe['error_bar'].replace(i, j, inplace=True)
 
