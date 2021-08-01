@@ -59,7 +59,7 @@ def run_tests(df, target_col='answer', cols=None, prob=0.95):
     }
 
     if 'error_bar' in cols:
-        df['error_bar'] = df['error_bar'].replace('none', 0).replace('line', 1).replace('cap', 1)
+        df['error_bar'] = df['error_bar'].replace('None', 0).replace('Line', 1).replace('Cap', 1)
 
     data = {}
 
@@ -99,7 +99,7 @@ def run_tests(df, target_col='answer', cols=None, prob=0.95):
     return pd.DataFrame(data).T
 
 
-def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, alternative='two-sided'):
+def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, type_="Fisher", alternative='two-sided'):
     """
     Determines if answer is dependent on the parameter.
     If parameters are not binary, dependance if evaluated by each possible pair.
@@ -131,19 +131,57 @@ def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, alternative='t
     }
 
     data = {}
-
-    for k in contingency_tables.keys():
-        oddsratio, pvalue = stats.fisher_exact(
-            contingency_tables[k],
-            alternative=alternative
-        )
-        data[k] = {
-            "Significant": pvalue <= 1 - prob,
-            "Yule's Q": (oddsratio-1)/(oddsratio+1),
-            "Yule's Y":  (np.sqrt(oddsratio)-1)/(np.sqrt(oddsratio)+1),
-            "OddsRatio": oddsratio,
-            "P-value": pvalue,
+    if type_== "Fisher":
+        for k in contingency_tables.keys():
+            oddsratio, pvalue = stats.fisher_exact(
+                contingency_tables[k],
+                alternative=alternative
+            )
+            data[k] = {
+                "Significant": pvalue <= 1 - prob,
+                "Yule's Q": (oddsratio-1)/(oddsratio+1),
+                "Yule's Y":  (np.sqrt(oddsratio)-1)/(np.sqrt(oddsratio)+1),
+                "OddsRatio": oddsratio,
+                "P-value": pvalue,
+                
+            }
+    if type_ == "Chi":
+        non_ordinal = [
+        'type', 'color', 'bar_orientation'
+    ]
+        for k in contingency_tables.keys():
+            chi_stat, chi_p, dof, expected = stats.chi2_contingency(
+                contingency_tables[k]
+            )
+            critical = stats.chi2.ppf(chi_p, dof)
             
-        }
+            # kruskal-wallis test
+            k_stat, k_p = stats.kruskal(*contingency_tables[k])
+
+            k_ = k.split("-")[0]
+
+            if k_ not in non_ordinal:
+                df_ = df.dropna(subset=[target_col])
+                param = df_[k_].dropna().astype(int)
+                ans = df_.loc[param.index,target_col].astype(int)
+
+                # rank correlation
+                kt_coeff, kt_p = stats.kendalltau(ans, param)
+                pr_coeff, pr_p = stats.spearmanr(ans, param)
+            else:
+                kt_coeff, kt_p, pr_coeff, pr_p = np.nan, np.nan, np.nan, np.nan 
+            data[k] = {
+                "Significant": abs(chi_stat) >= critical,
+                "P-value": chi_p,
+                'KW p-val': k_p,
+                'KW significant': k_p <= 1-prob, # two-tailed test
+                "Cramer's V": dython.nominal.cramers_v(df['answer'], df[k_]),
+                "Kendall's Tau": kt_coeff if k_ not in non_ordinal else np.nan,
+                "Tau Significant": kt_p <= 1-prob if k_ not in non_ordinal else np.nan,
+                "Spearman’s Rho": pr_coeff if k_ not in non_ordinal else np.nan,
+                "Rho significant": pr_p <= 1-prob if k_ not in non_ordinal else np.nan,
+                "Theil's U": dython.nominal.theils_u(df['answer'], df[k_])
+
+            }
     
     return pd.DataFrame(data).T
