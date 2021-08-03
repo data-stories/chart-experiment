@@ -7,6 +7,7 @@ class ParamsMap:
         with open(mapping_file, "r") as read_file:
             self.mapping = json.load(read_file)
 
+        # hard-coded based on annotation documentations
         self.item_mapping = {
             "pie": [0,1,3,10,7,8,9,5,2,4,6],
             "donut": [0,1,4,11,8,9,10,6,3,5,7,2],

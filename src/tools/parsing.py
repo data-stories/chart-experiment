@@ -69,8 +69,8 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
                 dataframe['sample'].replace("0", False, inplace=True)
                 dataframe['sample'].replace("1", True, inplace=True)
             if k == 'grid':
-                dataframe['grid'].replace('gr00', False, inplace=True)
-                dataframe['grid'].replace('gr0y', True, inplace=True)
+                dataframe['grid'].replace('00', False, inplace=True)
+                dataframe['grid'].replace('0y', True, inplace=True)
             if k == 'bar_orientation':
                 dataframe['bar_orientation'] = dataframe['bar_orientation'].str.upper()
 
@@ -103,7 +103,7 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
     # add 'skips' for 3-point answer scale
     if ans_3:
         # answers in the same column
-        dataframe['answer'].fillna(value='skip',  inplace=True)
+        dataframe['answer'].fillna(value='Skip',  inplace=True)
 
         
     return dataframe

@@ -32,7 +32,7 @@ def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='questio
     return pd.DataFrame(overview, index=["Value"]).T
 
 
-def run_tests(df, target_col='answer', cols=None, prob=0.95):
+def run_tests(df, target_col='answer', cols=['type', 'color', 'data'], prob=0.95):
     """
     Runs Chi-Square (two-tailed) and Kruskal-Wallis tests.
     Gets effect size coefficients (V, tau, rho) and uncertainty coefficient (U).
@@ -40,14 +40,14 @@ def run_tests(df, target_col='answer', cols=None, prob=0.95):
     Args:
         df ([dataframe]): dataframe
         target_col (str, optional): Column containing answer/response variable. Defaults to 'answer'.
-        cols ([type], optional): Columns to apply the tests to. Defaults to None, which covers all.
+        cols ([type], optional): Columns to apply the tests to. Defaults to ['type', 'color', 'data'].
         prob (float, optional): Probability to test at. Defaults to 0.95.
 
     Returns:
         [dataframe]: dataframe with results
     """
     non_ordinal = [
-        'type', 'color', 'bar_orientation'
+        'type', 'color', 'bar_orientation', 'font', 'legend_loc'
     ]
 
     if cols is None:
@@ -69,8 +69,12 @@ def run_tests(df, target_col='answer', cols=None, prob=0.95):
         critical = stats.chi2.ppf(prob, dof)
 
         # kruskal-wallis test
-        k_args = [df[df[k] == j][target_col].dropna().astype(int) for j in v]
-        k_stat, k_p = stats.kruskal(*k_args)
+        try:
+            k_args = [df[df[k] == j][target_col].dropna().astype(int) for j in v]
+            k_stat, k_p = stats.kruskal(*k_args)
+        except ValueError as e:
+            print(e, "skipping {}".format(k))
+            k_p = np.nan
 
         if k not in non_ordinal:
             df_ = df.dropna(subset=[target_col])
@@ -147,7 +151,7 @@ def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, type_="Fisher"
             }
     if type_ == "Chi":
         non_ordinal = [
-        'type', 'color', 'bar_orientation'
+        'type', 'color', 'bar_orientation', 'font', 'legend_loc'
     ]
         for k in contingency_tables.keys():
             chi_stat, chi_p, dof, expected = stats.chi2_contingency(
@@ -156,7 +160,11 @@ def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, type_="Fisher"
             critical = stats.chi2.ppf(chi_p, dof)
             
             # kruskal-wallis test
-            k_stat, k_p = stats.kruskal(*contingency_tables[k])
+            try:
+                k_stat, k_p = stats.kruskal(*contingency_tables[k])
+            except ValueError as e:
+                print(e, "skipping {}".format(k))
+                k_p = np.nan
 
             k_ = k.split("-")[0]
 
