@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import re
 
 def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='crowdsource', ans_3=False):
     """Returns datafame with parsed parameters in columns
@@ -104,6 +105,157 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
     if ans_3:
         # answers in the same column
         dataframe['answer'].fillna(value='Skip',  inplace=True)
-
         
     return dataframe
+
+def parse_prolific(dataframe):
+    """Parsing function to transform horizontal Prolific data output to
+    Crowdsource-like verical output.
+
+    Args:
+        dataframe: DataFrame with Prolific data
+
+    Raises:
+        ValueError: when transformation dimentions are wrong
+
+    Returns:
+        dataframe: transformed dataframe
+    """
+
+    dataframe.drop(
+        columns=[
+            'attention_check_question','attention_check_answer'
+        ]
+    )
+
+    imgs = dataframe.melt(
+        id_vars=['session_date', 'prolific_id'],
+        value_vars=[
+            'image_1','image_2','image_3','image_4',
+            'image_5','image_6','image_7','image_8',
+            'image_9','image_10','image_11','image_12'
+        ]
+    )
+
+    answers = dataframe.melt(
+        id_vars=['session_date', 'prolific_id'],
+        value_vars=[
+            'image_1_answer','image_2_answer','image_3_answer','image_4_answer',
+            'image_5_answer','image_6_answer','image_7_answer','image_8_answer',
+            'image_9_answer','image_10_answer','image_11_answer','image_12_answer'
+        ]
+    )
+
+    if not imgs.iloc[:, :-2].equals(answers.iloc[:, :-2]):
+        raise ValueError("Images and answers do not line up.")
+
+    dataframe = imgs.join(answers.iloc[:, -2:], rsuffix='_other')
+
+    dataframe.drop(columns=['variable', 'variable_other'], inplace=True)
+    dataframe.rename(
+        columns={
+            'value': 'question_id',
+            'value_other': 'answer'
+        },
+        inplace=True
+    )
+
+    return dataframe
+
+def parse_mturk(dataframe):
+    pass
+
+def parse_chart_name_neal(dataframe, target_col='question_id'):
+    dataframe[target_col] = dataframe[target_col].str.replace(".png", "", regex=False)
+    
+    # data
+    dataframe['data'] = dataframe.apply(
+        lambda x: 2 if x[target_col][-1] == "2" else 1,
+        axis=1
+    )
+    # type
+    dataframe['type'] = dataframe.apply(
+        lambda row: type_parse(row, target_col),
+        axis=1
+    )
+    # source
+    dataframe['source'] = dataframe.apply(
+        lambda row: source_parse(row, target_col),
+        axis=1
+    )
+    # trend_positive
+    dataframe['trend_positive'] = dataframe.apply(
+        lambda row: bool(re.search('^(((Line)|(Bar))((Group)|(Sing)))?S?P', row[target_col])),
+        axis=1
+    )
+    # trend_strong
+    dataframe['trend_strong'] = dataframe.apply(
+        lambda row: bool(re.search('^(((Line)|(Bar))((Group)|(Sing)))?S?[PN]S', row[target_col])),
+        axis=1
+    )
+    # title
+    dataframe['title'] = dataframe.apply(
+        lambda row: bool(re.search('^((Line|Bar)(Group|Sing))?S?[PN][SW]T', row[target_col])),
+        axis=1
+    )
+    # grid
+    dataframe['grid'] = dataframe.apply(
+        lambda row: bool(re.search('^((Line|Bar)(Group|Sing))?S?[PN][SW][TN]G', row[target_col])),
+        axis=1
+    )
+    # color
+    dataframe['color'] = dataframe.apply(
+        lambda row: color_parse(row, target_col),
+        axis=1
+    )
+    # line of best fit
+    dataframe['line'] = dataframe.apply(
+        lambda row: line_bf(row, target_col),
+        axis=1
+    )
+    # numeric answers
+    dataframe['answer'] = pd.to_numeric(dataframe['answer'], errors='coerce')
+   
+    return dataframe
+
+def type_parse(row, target_col):
+    if bool(re.search('^BarGroup', row[target_col])):
+        val = 'BarGroup'
+    elif bool(re.search('^BarSing', row[target_col])):
+        val = 'BarSing'
+    elif bool(re.search('^LineGroup', row[target_col])):
+        val = 'LineGroup'
+    elif bool(re.search('^LineSing', row[target_col])):
+        val = 'LineSing'
+    else:
+        val = 'Scatter'
+    return val
+
+def color_parse(row, target_col):
+    if bool(re.search('B$', row[target_col])) or bool(re.search('B2$', row[target_col])):
+        val = 'bnw'
+    elif bool(re.search('C$', row[target_col])) or bool(re.search('C2$', row[target_col])):
+        val = 'color'
+    else:
+        val = np.nan
+    return val
+
+def line_bf(row, target_col):
+    if len(row[target_col]) == 6 or len(row[target_col]) == 7:
+        if bool(re.search('L$', row[target_col])) or bool(re.search('L2$', row[target_col])):
+            val = True
+        else:
+            val = False
+    else:
+        val = np.nan
+    return val
+
+def source_parse(row, target_col):
+    if row['type'] == 'Scatter':
+        if row[target_col][0] == 'S':
+            val = True
+        else:
+            val = False
+    else:
+        val = bool(re.search('^((Line)|(Bar))((Group)|(Sing))S', row[target_col]))
+    return val

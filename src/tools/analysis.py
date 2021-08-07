@@ -6,7 +6,7 @@ import numpy as np
 from scipy import stats
 
 
-def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='question_id'):
+def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='question_id', multi=False):
     """Table with Descriptive highlights
 
     Args:
@@ -14,6 +14,7 @@ def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='questio
         user_col (str, optional): column with user identifiers. Defaults to 'ObfuscatedUserId'.
         q_col (str, optional): column with answer identifiers. Defaults to 'answer'.
         ch_col (str, optional): column with chart identifiers. Defaults to 'question_id'.
+        multi (bool, optional): if the answers are multiclass. Defaults to False.
 
     Returns:
         overview: summary dataframe
@@ -22,12 +23,18 @@ def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='questio
         "RespondersCount": len(df[user_col].unique()),
         "ResponsesCount": df.shape[0],
         "ImageCount": len(df[ch_col].unique()),
-        "AnsTrueCount": df[df[q_col] == True].shape[0],
-        "AnsFalseCount": df[df[q_col] == False].shape[0],
         "AnsSkipCount": df[q_col].isna().sum()
     }
-    for i in ['True', 'False', 'Skip']:
-        overview["Proportion{}".format(i)] = overview["Ans{}Count".format(i)]/overview['ResponsesCount']
+    if multi:
+        overview["ProportionSkip"] = overview["AnsSkipCount"]/overview['ResponsesCount']
+        for i in df[q_col].dropna().unique():
+            overview["Ans{}Count".format(i)] = df[df[q_col] == i].shape[0]
+            overview["Proportion{}".format(i)] = overview["Ans{}Count".format(i)]/overview['ResponsesCount']
+    else:
+        overview["AnsTrueCount"] = df[df[q_col] == True].shape[0]
+        overview["AnsFalseCount"] = df[df[q_col] == False].shape[0]
+        for i in ['True', 'False', 'Skip']:
+            overview["Proportion{}".format(i)] = overview["Ans{}Count".format(i)]/overview['ResponsesCount']
 
     return pd.DataFrame(overview, index=["Value"]).T
 
