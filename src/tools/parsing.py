@@ -165,7 +165,17 @@ def parse_prolific(dataframe):
 def parse_mturk(dataframe):
     pass
 
-def parse_chart_name_neal(dataframe, target_col='question_id'):
+def parse_chart_name_neal(dataframe, target_col='question_id', answer_col=None):
+    """Parsing function for Neal's naming scheme
+
+    Args:
+        dataframe: dataframe with experiment data
+        target_col (str, optional): column with chart names to parse. Defaults to 'question_id'.
+        answer_col (str, optional): column with answers. Defaults to None.
+
+    Returns:
+        dataframe: parsed dataframe
+    """
     dataframe[target_col] = dataframe[target_col].str.replace(".png", "", regex=False)
     
     # data
@@ -214,7 +224,8 @@ def parse_chart_name_neal(dataframe, target_col='question_id'):
         axis=1
     )
     # numeric answers
-    dataframe['answer'] = pd.to_numeric(dataframe['answer'], errors='coerce')
+    if answer_col:
+        dataframe[answer_col] = pd.to_numeric(dataframe[answer_col], errors='coerce')
    
     return dataframe
 
