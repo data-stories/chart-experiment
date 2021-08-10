@@ -85,8 +85,8 @@ def run_tests(df, target_col='answer', cols=['type', 'color', 'data'], prob=0.95
 
         if k not in non_ordinal:
             df_ = df.dropna(subset=[target_col])
-            param = df_[k].dropna().astype(int)
-            ans = df_.loc[param.index,target_col].astype(int)
+            param = df_[k].dropna().astype(float)
+            ans = df_.loc[param.index,target_col].astype(float)
 
             # rank correlation
             kt_coeff, kt_p = stats.kendalltau(ans, param)
