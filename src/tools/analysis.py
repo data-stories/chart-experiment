@@ -86,13 +86,13 @@ def run_tests(df, target_col='answer', cols=['type', 'color', 'data'], prob=0.95
         if k not in non_ordinal:
             df_ = df.dropna(subset=[target_col])
             param = df_[k].dropna().astype(float)
-            ans = df_.loc[param.index,target_col].astype(float)
+            ans = df_.loc[param.index,target_col].astype(int)
 
             # rank correlation
             kt_coeff, kt_p = stats.kendalltau(ans, param)
             pr_coeff, pr_p = stats.spearmanr(ans, param)
         else:
-            kt_coeff, kt_p, pr_coeff, pr_p = np.nan, np.nan, np.nan, np.nan 
+            kt_coeff, kt_p, pr_coeff, pr_p = np.nan, np.nan, np.nan, np.nan
 
         data[k] = {
           'Chi p-val': chi_p,
@@ -164,7 +164,7 @@ def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, type_="Fisher"
             chi_stat, chi_p, dof, expected = stats.chi2_contingency(
                 contingency_tables[k]
             )
-            critical = stats.chi2.ppf(chi_p, dof)
+            critical = stats.chi2.ppf(prob, dof)
             
             # kruskal-wallis test
             try:
@@ -186,7 +186,7 @@ def adapted_fisher(df, target_col='answer', cols=None, prob=0.95, type_="Fisher"
             else:
                 kt_coeff, kt_p, pr_coeff, pr_p = np.nan, np.nan, np.nan, np.nan 
             data[k] = {
-                "Significant": abs(chi_stat) >= critical,
+                "Chi Significant": abs(chi_stat) >= critical,
                 "P-value": chi_p,
                 'KW p-val': k_p,
                 'KW significant': k_p <= 1-prob, # two-tailed test
