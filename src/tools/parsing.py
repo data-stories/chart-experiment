@@ -60,6 +60,8 @@ def parse_chart_name(dataframe, target_col, relevant_params=None, ans_source='cr
                     dataframe["precision"].fillna(0, inplace=True)
                 if k == 'bar_spacing':
                     dataframe["bar_spacing"] /= 1000
+                if k == 'wedge_explode':
+                    dataframe["wedge_explode"] /= 100
                 for i in ['bar_width','annotation_dist', 'donut_hole']:
                     if i == k:
                         dataframe[i] /= 10
