@@ -272,3 +272,13 @@ def source_parse(row, target_col):
     else:
         val = bool(re.search('^((Line)|(Bar))((Group)|(Sing))S', row[target_col]))
     return val
+
+def clean(df, target_col='question_id', answer_col='answer', user_col="ObfuscatedUserId", skip_alias=None):
+    if skip_alias:
+        df[answer_col].replace(skip_alias, np.nan, inplace=True)
+    df.dropna(subset=[answer_col], inplace=True)
+    df = df.drop_duplicates(subset=[user_col, answer_col, target_col], keep='last')
+    # Drop contradictory responses
+    # if there's more than one answer when grouped by user & answer, then there's yes and no 
+    df = df.drop_duplicates(subset=[user_col, target_col], keep=False)
+    return df
