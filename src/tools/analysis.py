@@ -38,6 +38,83 @@ def get_summary(df, user_col='ObfuscatedUserId', q_col='answer', ch_col='questio
 
     return pd.DataFrame(overview, index=["Value"]).T
 
+def get_table_summary( 
+    df_t, df_r, d1_name='Trustworthiness', d2_name='Readability',
+    user_col='ObfuscatedUserId', q_col='answer', ch_col='question_id'
+    ):
+    """gives summary for two dataframes
+
+    Args:
+        df_t (DataFrame): DataFrame 1 (trustworthiness)
+        df_r (DataFrame): DataFrame 2 (readability)
+    """
+    # get summary for table 1 & 2 
+    df_t_sum = get_summary(df_t)
+    df_r_sum = get_summary(df_r)
+
+    # aggregate by image
+    ratings_by_image = {
+        d1_name: pd.crosstab(df_t[ch_col], df_t[q_col], dropna=False),
+        d2_name: pd.crosstab(df_r[ch_col], df_r[q_col], dropna=False)
+    }
+    ratings_by_image[d1_name]['Total']= ratings_by_image[d1_name].sum(axis=1)
+    ratings_by_image[d2_name]['Total']= ratings_by_image[d2_name].sum(axis=1)
+
+    # aggregate by user
+    ratings_by_user = {
+        "trust": pd.crosstab(df_t[user_col], df_t[q_col], dropna=False),
+        "read": pd.crosstab(df_r[user_col], df_r[q_col], dropna=False)
+    }
+    ratings_by_user[d1_name]['Total']= ratings_by_user[d1_name].sum(axis=1)
+    ratings_by_user[d2_name]['Total']= ratings_by_user[d2_name].sum(axis=1)
+
+    d = {d1_name: {}, d2_name: {}, 'Total': {}}
+
+    # Image
+    d[d1_name]['Images'] = df_t_sum.loc['ImageCount','Value']
+    d[d2_name]['Images'] = df_r_sum.loc['ImageCount','Value']
+    d['Total']['Images'] = d[d1_name]['Images'] + d[d2_name]['Images'] - len(np.intersect1d(df_t[ch_col].unique(),df_r[ch_col].unique()))
+
+    # Unique contributors
+    d[d1_name]['Contributors'] = df_t_sum.loc['RespondersCount','Value']
+    d[d2_name]['Contributors'] = df_r_sum.loc['RespondersCount','Value']
+    d['Total']['Contributors'] = d[d1_name]['Contributors'] + d[d2_name]['Contributors'] - len(np.intersect1d(df_t[user_col].unique(),df_r[user_col].unique()))
+
+    # Answers
+    d[d1_name]['Answers'] = df_t_sum.loc['ResponsesCount','Value']
+    d[d2_name]['Answers'] = df_r_sum.loc['ResponsesCount','Value']
+    d['Total']['Answers'] = d[d1_name]['Answers'] + d[d2_name]['Answers']
+
+    # % yes
+    d[d1_name]['% Yes'] = df_t_sum.loc['ProportionTrue','Value']
+    d[d2_name]['% Yes'] = df_r_sum.loc['ProportionTrue','Value']
+
+    # % no
+    d[d1_name]['% No'] = df_t_sum.loc['ProportionFalse','Value']
+    d[d2_name]['% No'] = df_r_sum.loc['ProportionFalse','Value']
+
+    # % skip
+    d[d1_name]['% Skip'] = df_t_sum.loc['ProportionSkip','Value']
+    d[d2_name]['% Skip'] = df_r_sum.loc['ProportionSkip','Value']
+
+    # Avg Answer per contributor
+    d[d1_name]['Avg Ans/Contributor'] = ratings_by_user[d1_name]['Total'].mean()
+    d[d2_name]['Avg Ans/Contributor'] = ratings_by_user[d2_name]['Total'].mean()
+
+    # StDev Answer per contributor
+    d[d1_name]['StDev Ans/Contributor'] = ratings_by_user[d1_name]['Total'].std()
+    d[d2_name]['StDev Ans/Contributor'] = ratings_by_user[d2_name]['Total'].std()
+
+    # Avg Answer per image
+    d[d1_name]['Avg Ans/Image'] = ratings_by_image[d1_name]['Total'].mean()
+    d[d2_name]['Avg Ans/Image'] = ratings_by_image[d2_name]['Total'].mean()
+
+    # StDev Answer per image
+    d[d1_name]['StDev Ans/Image'] = ratings_by_image[d1_name]['Total'].std()
+    d[d2_name]['StDev Ans/Image'] = ratings_by_image[d2_name]['Total'].std()
+
+    return pd.DataFrame(d)
+
 
 def run_tests(df, target_col='answer', cols=['type', 'color', 'data'], prob=0.95):
     """
