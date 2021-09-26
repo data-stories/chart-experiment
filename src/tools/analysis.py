@@ -62,8 +62,8 @@ def get_table_summary(
 
     # aggregate by user
     ratings_by_user = {
-        "trust": pd.crosstab(df_t[user_col], df_t[q_col], dropna=False),
-        "read": pd.crosstab(df_r[user_col], df_r[q_col], dropna=False)
+        d1_name: pd.crosstab(df_t[user_col], df_t[q_col], dropna=False),
+        d2_name: pd.crosstab(df_r[user_col], df_r[q_col], dropna=False)
     }
     ratings_by_user[d1_name]['Total']= ratings_by_user[d1_name].sum(axis=1)
     ratings_by_user[d2_name]['Total']= ratings_by_user[d2_name].sum(axis=1)
