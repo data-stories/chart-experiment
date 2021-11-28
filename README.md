@@ -19,10 +19,10 @@ As shown on the diagram above, to generate the chart images, we need:
 
 ## Audit
 
-`src.tools.audit` is a script for status updates and rating progress audit. It has several options as explained below:
+`src.tools.audit` is a standalone script for status updates and rating progress audit. It has several options as explained below:
 
 ```bash
-(base) AnetasMacBook2:chart-experiment anetaswianiewicz$ python -m src.tools.audit --help
+$ python -m src.tools.audit --help
 Usage: audit.py [OPTIONS]
 
 Options:
@@ -47,7 +47,7 @@ Options:
 
 ### Generating requeue list
 ```bash
-(base) AnetasMacBook2:chart-experiment anetaswianiewicz$ python -m src.tools.audit -d <TARGET DIR> -ls
+$ python -m src.tools.audit -d <TARGET DIR> -ls
 ```
 Running this will output two `txt` files (one for each task) into the working directory. The files contain all `question_id`'s below `rep` threshold. By default, the lists are given for Batch 1. Use `-ls -b 2` option to switch to Batch 2.
 **NOTE:** The target directory must contain both files (without any further subdirectories) and the files must match the export naming convention (`'chart_<TASK>_<MMDD>.csv'`)
