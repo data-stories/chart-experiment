@@ -24,18 +24,6 @@ def process_export(csv_file, rel_params, thresh):
         subset=["ObfuscatedUserId", 'question_id'], keep=False)
     logging.info('Clean df shape {}'.format(df.shape))
 
-    # # optimize memory
-    # for col in df.columns:
-    #     if col != 'answer_time':
-    #         df[col] = df[col].astype("category")
-    
-    # df_1 = df[df['question_id'].str.contains('dd02|dd06|dd12', regex=True)].index
-    # df_2 = df[~df['question_id'].str.contains('dd02|dd06|dd12', regex=True)]
-
-    # b1_list = df[df['question_id'].str.contains('dd02|dd06|dd12', regex=True)]\
-    #           .loc[:, 'question_id'].unique()
-    # import pdb
-    # pdb.set_trace()
     df['batch1'] = df['question_id'].str.contains('dd02|dd06|dd12', regex=True)
     df['batch'] = df.apply(lambda x: 1 if x['batch1'] else 2, axis=1)
     df.drop(columns=['batch1'], inplace=True)
@@ -124,9 +112,7 @@ def main(**opts):
         opts['file_dir'], 'chart_readability_{}.csv'.format(last_monday()))
     trust_csv = os.path.join(
         opts['file_dir'], 'chart_trustworthiness_{}.csv'.format(last_monday()))
-    # read_csv = os.path.join(opts['file_dir'], 'test_r.csv')
-    # trust_csv = os.path.join(opts['file_dir'], 'test_t.csv')
-    
+  
     # process files
     logging.info('Processing files')
     
@@ -136,9 +122,6 @@ def main(**opts):
         'Trust': process_export(
             trust_csv, opts['rel_params'], opts['time_threshold'])}
 
-    # data['Trust']['B1'], data['Trust']['B2'] = process_export(
-    #     trust_csv, opts['rel_params'], opts['time_threshold'])
-    
     if opts['report']:
         img_counts = {1: 110592, 2: 75744}
         logging.info('Saving report to %s', os.getcwd())
