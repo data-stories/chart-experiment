@@ -103,7 +103,7 @@ def last_monday():
 )
 @click.option(
     '--date', '-D',
-    type=int,
+    type=str,
     default=last_monday(),
     help='Date of export'
 )
