@@ -101,17 +101,23 @@ def last_monday():
     default=['data'],
     help='Parameters used in parsing'
 )
+@click.option(
+    '--date', '-D',
+    type=int,
+    default=last_monday(),
+    help='Date of export'
+)
 def main(**opts):
     TIMESTAMP = datetime.now().strftime('%Y%m%d')
 
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
     
     # get files
-    logging.info('Getting files from {}'.format(last_monday()))
+    logging.info('Getting files from {}'.format(opts['date']))
     read_csv = os.path.join(
-        opts['file_dir'], 'chart_readability_{}.csv'.format(last_monday()))
+        opts['file_dir'], 'chart_readability_{}.csv'.format(opts['date']))
     trust_csv = os.path.join(
-        opts['file_dir'], 'chart_trustworthiness_{}.csv'.format(last_monday()))
+        opts['file_dir'], 'chart_trustworthiness_{}.csv'.format(opts['date']))
   
     # process files
     logging.info('Processing files')
